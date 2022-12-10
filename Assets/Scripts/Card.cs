@@ -21,9 +21,10 @@ public class Card : MonoBehaviour
         tempQuat = Quaternion.Euler(0, 0, 0);
         float tempTime = 0;
 
-        while(tempTime < 1)
+        pickSM.SoundON("flip");
+        while(tempTime < 0.25f)
         {
-            tempQuat.eulerAngles += new Vector3(0, 90, 0) * Time.deltaTime;
+            tempQuat.eulerAngles += new Vector3(0, 90, 0) * 4 * Time.deltaTime;
             transform.localRotation = tempQuat;
             tempTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
@@ -32,9 +33,9 @@ public class Card : MonoBehaviour
         this.GetComponent<SpriteRenderer>().sprite = front;
 
         tempTime = 0;
-        while (tempTime < 1)
+        while (tempTime < 0.25f)
         {
-            tempQuat.eulerAngles -= new Vector3(0, 90, 0) * Time.deltaTime;
+            tempQuat.eulerAngles -= new Vector3(0, 90, 0) * 4 * Time.deltaTime;
             transform.localRotation = tempQuat;
             tempTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
