@@ -6,7 +6,7 @@ public class Card : MonoBehaviour
 {
     [SerializeField] PickSM pickSM;
     [SerializeField] int num;
-    [SerializeField] Sprite front;
+    [SerializeField] Sprite front, back;
 
     private void OnMouseDown()
     {
@@ -40,5 +40,10 @@ public class Card : MonoBehaviour
             tempTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+    }
+
+    public void ResetCard()
+    {
+        this.GetComponent<SpriteRenderer>().sprite = back;
     }
 }

@@ -5,5 +5,5 @@ using UnityEngine;
 public class ItemList
 {
     public string[] itemNames = { "a" , "b"};
-    public int[] itemProbabilities = { 10, 20 };
+    public int[] itemAmount = { 10, 20 };
 }
