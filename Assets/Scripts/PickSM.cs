@@ -42,6 +42,7 @@ public class PickSM : MonoBehaviour
         for (int i = 0; i < 3; i++)
             if (i != num) cards[i].SetActive(false);
         StartCoroutine(ItemObjectSpawn(num));
+        randomBox.SaveGifts();
     }
 
     int SelectedItem()
@@ -79,6 +80,7 @@ public class PickSM : MonoBehaviour
 
     }
 
+    //선물이 있을 때 세팅 애니메이션
     IEnumerator SetUp()
     {
         Vector3 tempHandVector = hand.transform.position;
@@ -103,6 +105,7 @@ public class PickSM : MonoBehaviour
         StartCoroutine(PutCard());
     }
 
+    //선물이 없을 때 세팅 애니메이션
     IEnumerator NotSetUp()
     {
         Vector3 tempHandVector = hand.transform.position;
@@ -126,6 +129,7 @@ public class PickSM : MonoBehaviour
         StartCoroutine(FadeManager.FadeIn(setupText, 1));
     }
 
+    //카드 놓는 애니메이션
     IEnumerator PutCard()
     {
         Vector3 tempHandVector = hand.transform.position;

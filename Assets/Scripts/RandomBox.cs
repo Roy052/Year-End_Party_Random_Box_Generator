@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class RandomBox : MonoBehaviour
 {
+    public List<int> spriteNums;
     public List<string> names;
     public List<int> amounts;
 
     private void Start()
     {
+        spriteNums = new List<int>();
         names = new List<string>();
         amounts = new List<int>();
 
@@ -25,28 +27,21 @@ public class RandomBox : MonoBehaviour
         }
         else
         {
-            List<Gift> giftList = giftListData.GetGiftList();
-            for (int i = 0; i < giftList.Count; i++)
-            {
-                AddGift(giftList[i].GetName(), giftList[i].GetAmount());
-            }
+            spriteNums = giftListData.GetSpriteNums();
+            names = giftListData.GetNames();
+            amounts = giftListData.GetAmounts();
         }
     }
 
     public void SaveGifts()
     {
-        GiftList giftListData;
-        List<Gift> giftList = new List<Gift>();
-        for(int i = 0; i < names.Count; i++)
-        {
-            giftList.Add(new Gift(names[i], amounts[i]));
-        }
-        giftListData = new GiftList(giftList);
+        GiftList giftListData = new GiftList(spriteNums,names,amounts);
         SaveDataScript.SaveIntoJson(giftListData);
     }
 
-    public void AddGift(string name, int amount)
+    public void AddGift(int spriteNum, string name, int amount)
     {
+        //이미 있는 선물인가
         int existItemPos = -1;
         for(int i = 0; i < names.Count; i++)
         {
@@ -56,12 +51,14 @@ public class RandomBox : MonoBehaviour
                 break;
             }
         }
+
         if(existItemPos != -1)
         {
             amounts[existItemPos] += amount; 
         }
         else
         {
+            spriteNums.Add(spriteNum);
             names.Add(name);
             amounts.Add(amount);
         }

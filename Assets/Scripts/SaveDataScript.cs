@@ -7,8 +7,10 @@ public class SaveDataScript : MonoBehaviour
 {
     static public void SaveIntoJson(GiftList giftListData)
     {
-        GiftList saveData = giftListData;
+        GiftList saveData = new GiftList(giftListData);
+        Debug.Log(saveData.GetAmounts()[0]);
         string save = JsonUtility.ToJson(saveData);
+        Debug.Log(save);
         File.WriteAllText("./Assets/GiftInfo/" + "SaveData.json", save);
     }
 
@@ -77,48 +79,45 @@ public class SaveDataScript : MonoBehaviour
 
 
 [System.Serializable]
-public class Gift
-{
-    string name;
-    int amount;
-
-    public Gift(string name, int amount)
-    {
-        this.name = name;
-        this.amount = amount;
-    }
-    
-    public string GetName()
-    {
-        return name;
-    }
-
-    public int GetAmount()
-    {
-        return amount;
-    }
-}
 public class GiftList
 {
-    List<Gift> giftList;
+    public List<int> spriteNums;
+    public List<string> names;
+    public List<int> amounts;
 
     public GiftList()
     {
-        giftList = new List<Gift>();
+        spriteNums = new List<int>();
+        names = new List<string>();
+        amounts = new List<int>();
     }
 
-    public GiftList(GiftList copy)
+    public GiftList(List<int> copySpriteNums, List<string> copyNames, List<int> copyAmounts)
     {
-        giftList = copy.GetGiftList();
+        spriteNums = copySpriteNums;
+        names = copyNames;
+        amounts = copyAmounts;
     }
 
-    public GiftList(List<Gift> giftList)
+    public GiftList(GiftList giftList)
     {
-        this.giftList = giftList;
+        this.spriteNums = giftList.GetSpriteNums();
+        this.names = giftList.GetNames();
+        this.amounts = giftList.GetAmounts();
     }
 
-    public List<Gift> GetGiftList()
+    public List<int> GetSpriteNums()
     {
-        return giftList;
+        return spriteNums;
+    }
+
+    public List<string> GetNames()
+    {
+        return names;
+    }
+
+    public List<int> GetAmounts()
+    {
+        return amounts;
     }
 }
