@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
     }
     public void MenuToSetting()
     {
-        SceneManager.LoadScene("Setting");
+        SceneManager.LoadScene("SetUp");
     }
     public void ToMenu()
     {
