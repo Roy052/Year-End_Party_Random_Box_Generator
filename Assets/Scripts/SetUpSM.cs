@@ -18,6 +18,7 @@ public class SetUpSM : MonoBehaviour
     [SerializeField] Dropdown spriteNumDropDown;
     [SerializeField] InputField[] inputFields;
     [SerializeField] Text warningText;
+    [SerializeField] SpriteRenderer giftImage;
     int tempNum, tempSpriteNum;
     string tempName, tempAmount;
     
@@ -30,6 +31,21 @@ public class SetUpSM : MonoBehaviour
 
         for (int i = 0; i < randomBox.names.Count; i++)
             CreateGift(i, randomBox.spriteNums[i], randomBox.names[i], randomBox.amounts[i]);
+
+        spriteNumDropDown.options.Clear();
+        for (int i = 0; i < randomBox.sprites.Count; i++)
+        {
+            spriteNumDropDown.options.Add(new Dropdown.OptionData() { text = i.ToString() });
+        }
+        spriteNumDropDown.onValueChanged.AddListener(delegate { DropdownItemSelected(spriteNumDropDown); });
+            
+        giftImage.sprite = randomBox.sprites[0];
+    }
+
+    void DropdownItemSelected(Dropdown dropdown)
+    {
+        int index = dropdown.value;
+        giftImage.sprite = randomBox.sprites[index];
     }
 
     public void CreateGift()
@@ -60,7 +76,6 @@ public class SetUpSM : MonoBehaviour
             {
                 warningText.text = "수량은 숫자로 입력하세요";
             }
-            
         }
     }
 
