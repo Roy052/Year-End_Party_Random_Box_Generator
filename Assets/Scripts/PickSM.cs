@@ -6,21 +6,28 @@ using UnityEngine.UI;
 public class PickSM : MonoBehaviour
 {
     GameObject gameManagerObject;
+    GameManager gm;
     RandomBox randomBox;
 
     int itemNum = -1;
     int probabilty = 0;
+    public int animationSpeed;
 
     [SerializeField] GameObject[] cards;
 
     [SerializeField] Sprite itemImage;
     [SerializeField] GameObject itemObject;
+    [SerializeField] Text[] itemTexts;
 
     //SetUp
     [SerializeField] GameObject hand, deck;
     [SerializeField] AudioClip[] audioClips;
     [SerializeField] Text setupText;
     AudioSource audioSource;
+
+    //Repick
+    [SerializeField] GameObject repickBtn, repickText;
+
     private void Start()
     {
         for (int i = 0; i < 3; i++)
@@ -28,7 +35,9 @@ public class PickSM : MonoBehaviour
 
         gameManagerObject = GameObject.Find("GameManager");
         randomBox = gameManagerObject.GetComponent<RandomBox>();
+        gm = gameManagerObject.GetComponent<GameManager>();
         audioSource = this.GetComponent<AudioSource>();
+
         if (randomBox.IsItemExist())
             StartCoroutine(SetUp());
         else
@@ -43,6 +52,8 @@ public class PickSM : MonoBehaviour
             if (i != num) cards[i].SetActive(false);
         StartCoroutine(ItemObjectSpawn(num));
         randomBox.SaveGifts();
+        repickBtn.SetActive(true);
+        repickText.SetActive(true);
     }
 
     int SelectedItem()
@@ -75,18 +86,23 @@ public class PickSM : MonoBehaviour
     {
         itemObject.transform.position = cards[num].transform.position;
         yield return new WaitForSeconds(1.5f);
-        itemObject.GetComponent<SpriteRenderer>().sprite = itemImage;
+        itemObject.GetComponent<SpriteRenderer>().sprite = randomBox.sprites[randomBox.spriteNums[itemNum]];
         StartCoroutine(FadeManager.FadeIn(itemObject.GetComponent<SpriteRenderer>(), 1));
-
+        itemTexts[num].text = randomBox.names[itemNum];
+        StartCoroutine(FadeManager.FadeIn(itemTexts[itemNum], 1.5f));
     }
 
     //선물이 있을 때 세팅 애니메이션
     IEnumerator SetUp()
     {
+        repickBtn.SetActive(false);
+        repickText.SetActive(false);
+
+        yield return new WaitForSeconds(0.5f);
         Vector3 tempHandVector = hand.transform.position;
         while(hand.transform.position.y > 1.14f)
         {
-            tempHandVector.y -= 10 * Time.deltaTime;
+            tempHandVector.y -= animationSpeed * Time.deltaTime;
             hand.transform.position = tempHandVector;
             yield return new WaitForEndOfFrame();
         }
@@ -94,8 +110,8 @@ public class PickSM : MonoBehaviour
         Vector3 tempDeckVector = deck.transform.position;
         while(hand.transform.position.y < 11)
         {
-            tempHandVector.y += 10 * Time.deltaTime;
-            tempDeckVector.y += 10 * Time.deltaTime;
+            tempHandVector.y += animationSpeed * Time.deltaTime;
+            tempDeckVector.y += animationSpeed * Time.deltaTime;
             hand.transform.position = tempHandVector;
             deck.transform.position = tempDeckVector;
             yield return new WaitForEndOfFrame();
@@ -111,7 +127,7 @@ public class PickSM : MonoBehaviour
         Vector3 tempHandVector = hand.transform.position;
         while (hand.transform.position.y > 1.14f)
         {
-            tempHandVector.y -= 10 * Time.deltaTime;
+            tempHandVector.y -= animationSpeed * Time.deltaTime;
             hand.transform.position = tempHandVector;
             yield return new WaitForEndOfFrame();
         }
@@ -119,8 +135,8 @@ public class PickSM : MonoBehaviour
         Vector3 tempDeckVector = deck.transform.position;
         while (hand.transform.position.y < 11)
         {
-            tempHandVector.y += 10 * Time.deltaTime;
-            tempDeckVector.y += 10 * Time.deltaTime;
+            tempHandVector.y += animationSpeed * Time.deltaTime;
+            tempDeckVector.y += animationSpeed * Time.deltaTime;
             hand.transform.position = tempHandVector;
             deck.transform.position = tempDeckVector;
             yield return new WaitForEndOfFrame();
@@ -138,7 +154,7 @@ public class PickSM : MonoBehaviour
             tempHandVector.x = cards[i].transform.position.x;
             while (hand.transform.position.y > 1.14f)
             {
-                tempHandVector.y -= 10 * Time.deltaTime;
+                tempHandVector.y -= animationSpeed * Time.deltaTime;
                 hand.transform.position = tempHandVector;
                 yield return new WaitForEndOfFrame();
             }
@@ -146,7 +162,7 @@ public class PickSM : MonoBehaviour
             cards[i].SetActive(true);
             while (hand.transform.position.y < 11)
             {
-                tempHandVector.y += 10 * Time.deltaTime;
+                tempHandVector.y += animationSpeed * Time.deltaTime;
                 hand.transform.position = tempHandVector;
                 yield return new WaitForEndOfFrame();
             }
@@ -156,10 +172,13 @@ public class PickSM : MonoBehaviour
 
     public void ResetCard()
     {
+        repickBtn.SetActive(false);
+        repickText.SetActive(false);
         for (int i = 0; i < 3; i++)
         {
             cards[i].SetActive(false);
             cards[i].GetComponent<Card>().ResetCard();
+            itemTexts[i].text = "";
         }
         itemObject.GetComponent<SpriteRenderer>().sprite = null;
             
@@ -183,6 +202,11 @@ public class PickSM : MonoBehaviour
             audioSource.clip = audioClips[2];
             audioSource.Play();
         }
+    }
+
+    public void ToMenu()
+    {
+        gm.ToMenu();
     }
 }
 

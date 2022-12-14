@@ -21,16 +21,19 @@ public class SetUpSM : MonoBehaviour
     [SerializeField] SpriteRenderer giftImage;
     int tempNum, tempSpriteNum;
     string tempName, tempAmount;
-    
 
+    //Audio
+    [SerializeField] AudioClip[] audioClips;
+    AudioSource audioSource;
     private void Start()
     {
         giftButtons = new List<GameObject>();
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         randomBox = GameObject.Find("GameManager").GetComponent<RandomBox>();
+        audioSource = this.GetComponent<AudioSource>();
 
         for (int i = 0; i < randomBox.names.Count; i++)
-            CreateGift(i, randomBox.spriteNums[i], randomBox.names[i], randomBox.amounts[i]);
+            CreateGiftBoard(i, randomBox.spriteNums[i], randomBox.names[i], randomBox.amounts[i]);
 
         spriteNumDropDown.options.Clear();
         for (int i = 0; i < randomBox.sprites.Count; i++)
@@ -71,6 +74,7 @@ public class SetUpSM : MonoBehaviour
             try
             {
                 CreateGift(tempNum, tempSpriteNum,tempName, int.Parse(tempAmount));
+                AudioON("add");
             }
             catch
             {
@@ -101,13 +105,19 @@ public class SetUpSM : MonoBehaviour
         }
         else
         {
-            GameObject temp = Instantiate(giftTemplate, giftTransform);
-            temp.transform.GetChild(0).GetComponent<Text>().text = giftName;
-            temp.transform.GetChild(1).GetComponent<Text>().text = giftAmount + "°³";
-            temp.GetComponent<GiftButton>().num = num;
-            temp.GetComponent<GiftButton>().setUpSM = this;
-            giftButtons.Add(temp);
+            CreateGiftBoard(num, spriteNum, giftName, giftAmount);
         }
+    }
+
+    public void CreateGiftBoard(int num, int spriteNum, string giftName, int giftAmount)
+    {
+        GameObject temp = Instantiate(giftTemplate, giftTransform);
+        temp.transform.GetChild(0).GetComponent<Text>().text = giftName;
+        temp.transform.GetChild(1).GetComponent<Text>().text = giftAmount + "°³";
+        temp.GetComponent<GiftButton>().num = num;
+        temp.GetComponent<GiftButton>().setUpSM = this;
+        giftButtons.Add(temp);
+        AudioON("add");
     }
 
     public void DeleteGift(int num)
@@ -124,18 +134,40 @@ public class SetUpSM : MonoBehaviour
 
     public void SaveGifts()
     {
+        AudioON("save");
         randomBox.SaveGifts();
     }
 
     public void ResetGifts()
     {
-        while(giftButtons.Count != 0)
+        AudioON("reset");
+        while (giftButtons.Count != 0)
             DeleteGift(0);
+        
         //SaveDataScript.DeleteSave();
     }
 
     public void ToMenu()
     {
         gm.ToMenu();
+    }
+
+    void AudioON(string clipName)
+    {
+        if(clipName == "add")
+        {
+            audioSource.clip = audioClips[0];
+            audioSource.Play();
+        }
+        else if (clipName == "reset")
+        {
+            audioSource.clip = audioClips[1];
+            audioSource.Play();
+        }
+        else if (clipName == "save")
+        {
+            audioSource.clip = audioClips[2];
+            audioSource.Play();
+        }
     }
 }
