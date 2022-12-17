@@ -84,8 +84,9 @@ public class RandomBox : MonoBehaviour
         else return true;
     }
 
-    void LoadImage()
+    public void LoadImage()
     {
+        sprites = new List<Sprite>();
         int count = 0;
         try
         {

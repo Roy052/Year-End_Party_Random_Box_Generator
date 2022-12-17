@@ -147,6 +147,19 @@ public class SetUpSM : MonoBehaviour
         //SaveDataScript.DeleteSave();
     }
 
+    public void ReloadImage()
+    {
+        randomBox.LoadImage();
+
+        spriteNumDropDown.options.Clear();
+        for (int i = 0; i < randomBox.sprites.Count; i++)
+        {
+            spriteNumDropDown.options.Add(new Dropdown.OptionData() { text = i.ToString() });
+        }
+
+        giftImage.sprite = randomBox.sprites[0];
+    }
+
     public void ToMenu()
     {
         gm.ToMenu();

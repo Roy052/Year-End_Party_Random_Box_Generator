@@ -45,5 +45,6 @@ public class Card : MonoBehaviour
     public void ResetCard()
     {
         this.GetComponent<SpriteRenderer>().sprite = back;
+        this.GetComponent<BoxCollider2D>().enabled = true;
     }
 }

@@ -46,20 +46,28 @@ public class PickSM : MonoBehaviour
     public void Pick(int num)
     {
         itemNum = SelectedItem();
-
-        randomBox.Picked(itemNum);
-        for (int i = 0; i < 3; i++)
-            if (i != num) cards[i].SetActive(false);
-        StartCoroutine(ItemObjectSpawn(num));
-        randomBox.SaveGifts();
-        repickBtn.SetActive(true);
-        repickText.SetActive(true);
+        if (itemNum == -1)
+        {
+            StartCoroutine(NotSetUp());
+            for (int i = 0; i < 3; i++)
+                cards[i].SetActive(false);
+        }
+        else
+        {
+            randomBox.Picked(itemNum);
+            for (int i = 0; i < 3; i++)
+                if (i != num) cards[i].SetActive(false);
+            StartCoroutine(ItemObjectSpawn(num));
+            randomBox.SaveGifts();
+            repickBtn.SetActive(true);
+            repickText.SetActive(true);
+        }
     }
 
     int SelectedItem()
     {
         int itemAmount = randomBox.names.Count;
-        int tempItemNum = 0;
+        int tempItemNum = -1;
 
         //Reset
         probabilty = 0;
@@ -124,6 +132,9 @@ public class PickSM : MonoBehaviour
     //선물이 없을 때 세팅 애니메이션
     IEnumerator NotSetUp()
     {
+        repickBtn.SetActive(false);
+        repickText.SetActive(false);
+
         Vector3 tempHandVector = hand.transform.position;
         while (hand.transform.position.y > 1.14f)
         {
@@ -174,15 +185,25 @@ public class PickSM : MonoBehaviour
     {
         repickBtn.SetActive(false);
         repickText.SetActive(false);
-        for (int i = 0; i < 3; i++)
+        if(SelectedItem() == -1)
         {
-            cards[i].SetActive(false);
-            cards[i].GetComponent<Card>().ResetCard();
-            itemTexts[i].text = "";
+            StartCoroutine(NotSetUp());
+            for (int i = 0; i < 3; i++)
+                cards[i].SetActive(false);
         }
-        itemObject.GetComponent<SpriteRenderer>().sprite = null;
-            
-        StartCoroutine(PutCard());
+        else
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                cards[i].SetActive(false);
+                cards[i].GetComponent<Card>().ResetCard();
+                itemTexts[i].text = "";
+            }
+            itemObject.GetComponent<SpriteRenderer>().sprite = null;
+
+            StartCoroutine(PutCard());
+        }
+        
     }
 
     public void SoundON(string name)
