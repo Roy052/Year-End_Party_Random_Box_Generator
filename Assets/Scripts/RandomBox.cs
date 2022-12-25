@@ -69,6 +69,7 @@ public class RandomBox : MonoBehaviour
 
     public void DeleteGift(int num)
     {
+        spriteNums.RemoveAt(num);
         names.RemoveAt(num);
         amounts.RemoveAt(num);
     }
