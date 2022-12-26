@@ -10,6 +10,7 @@ public class PickSM : MonoBehaviour
     RandomBox randomBox;
 
     int itemNum = -1;
+    int pickedNum;
     int probabilty = 0;
     public int animationSpeed;
 
@@ -45,6 +46,7 @@ public class PickSM : MonoBehaviour
     }
     public void Pick(int num)
     {
+        pickedNum = num;
         itemNum = SelectedItem();
         if (itemNum == -1)
         {
@@ -74,7 +76,10 @@ public class PickSM : MonoBehaviour
         for (int i = 0; i < itemAmount; i++)
             probabilty += randomBox.amounts[i];
 
-        Debug.Log(itemAmount + ", " + probabilty);
+        if (probabilty <= 0)
+            return tempItemNum;
+
+        //Debug.Log(itemAmount + ", " + probabilty);
         int temp = Random.Range(0, probabilty + 1);
         for (int i = 0; i < itemAmount; i++)
         {
@@ -85,7 +90,7 @@ public class PickSM : MonoBehaviour
                 break;
             }
         }
-        Debug.Log(temp + ", " + tempItemNum);
+        //Debug.Log(temp + ", " + tempItemNum);
 
         return tempItemNum;
     }
@@ -136,6 +141,7 @@ public class PickSM : MonoBehaviour
         repickText.SetActive(false);
 
         Vector3 tempHandVector = hand.transform.position;
+        tempHandVector.x = cards[pickedNum].transform.position.x;
         while (hand.transform.position.y > 1.14f)
         {
             tempHandVector.y -= animationSpeed * Time.deltaTime;
@@ -189,7 +195,14 @@ public class PickSM : MonoBehaviour
         {
             StartCoroutine(NotSetUp());
             for (int i = 0; i < 3; i++)
+            {
                 cards[i].SetActive(false);
+                cards[i].GetComponent<Card>().ResetCard();
+                itemTexts[i].text = "";
+            }
+            itemObject.GetComponent<SpriteRenderer>().sprite = null;
+
+            
         }
         else
         {

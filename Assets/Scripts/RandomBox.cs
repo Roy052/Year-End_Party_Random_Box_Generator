@@ -94,7 +94,7 @@ public class RandomBox : MonoBehaviour
             while (count < 100)
             {
                 string path = "./Assets/GiftInfo/" + count + ".png";
-                Debug.Log(path);
+                //Debug.Log(path);
                 if (File.Exists(path))
                 {
                     byte[] data = File.ReadAllBytes(path);

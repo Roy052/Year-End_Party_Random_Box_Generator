@@ -62,12 +62,12 @@ public class SetUpSM : MonoBehaviour
         if(tempName == "")
         {
             warningText.text = "이름을 입력하세요";
-            StartCoroutine(FadeManager.FadeOut(warningText, 2));
+            StartCoroutine(FadeManager.FadeOut(warningText, 3));
         }
         else if(tempAmount == "")
         {
             warningText.text = "수량을 입력하세요";
-            StartCoroutine(FadeManager.FadeOut(warningText, 2));
+            StartCoroutine(FadeManager.FadeOut(warningText, 3));
         }
         else
         {
@@ -79,6 +79,7 @@ public class SetUpSM : MonoBehaviour
             catch
             {
                 warningText.text = "수량은 숫자로 입력하세요";
+                StartCoroutine(FadeManager.FadeOut(warningText, 3));
             }
         }
     }
@@ -144,6 +145,7 @@ public class SetUpSM : MonoBehaviour
         while (giftButtons.Count != 0)
             DeleteGift(0);
         
+
         //SaveDataScript.DeleteSave();
     }
 

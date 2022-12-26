@@ -8,9 +8,8 @@ public class SaveDataScript : MonoBehaviour
     static public void SaveIntoJson(GiftList giftListData)
     {
         GiftList saveData = new GiftList(giftListData);
-        Debug.Log(saveData.GetAmounts()[0]);
         string save = JsonUtility.ToJson(saveData);
-        Debug.Log(save);
+        //Debug.Log(save);
         File.WriteAllText("./Assets/GiftInfo/" + "SaveData.json", save);
     }
 
@@ -19,11 +18,11 @@ public class SaveDataScript : MonoBehaviour
         try
         {
             string path = "./Assets/GiftInfo/SaveData.json";
-            Debug.Log(path);
+            //Debug.Log(path);
             if (File.Exists(path))
             {
                 string json = File.ReadAllText(path);
-                Debug.Log(json);
+                //Debug.Log(json);
                 GiftList gl = JsonUtility.FromJson<GiftList>(json);
                 return gl;
             }
@@ -48,7 +47,7 @@ public class SaveDataScript : MonoBehaviour
         try
         {
             string path = "./Assets/Save/SaveData.json";
-            Debug.Log(path);
+            //Debug.Log(path);
             if (File.Exists(path))
             {
                 File.Delete(path);
