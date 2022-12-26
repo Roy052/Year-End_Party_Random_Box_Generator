@@ -9,11 +9,19 @@
   </div>
   <div>
     <h3> 앱 설명 </h3>
-     2022년 <br><br>
+     2022년 온라인으로 진행된 송년회가 <br><br>
     <h2> 사용 방식 </h2>
-    <h3> 기본 사용 </h3>
-     Assets 폴더 안에 GiftInfo 폴더 안에 <br><br>
-     20초 동안 눈이 감기지 않도록 버티는 게임이다.<br><br>
+      <h3> 실행 </h3>
+      zip 파일을 압축 푼 뒤, Year-End_Party_Random_Box_Generator.exe 파일을 실행합니다.
+      <h3> 선물 추가 </h3>
+      메인 메뉴에서 설정 버튼(모양 + 텍스트)을 클릭합니다.<br><br>
+      Assets 폴더 안에 GiftInfo 폴더(/Assets/GiftInfo) 안에 160px X 160px 크기의 이미지를 추가합니다. <br><br>
+      게임을 시작한 후에 사진을 추가한 경우 이미지 리로드 버튼을 눌러야 합니다.<br><br>
+      중간에 있는 드롭박스에서 사진을 선택하고, 선물 이름을 입력하고, 선물 수량을 입력한 뒤 선물 넣기 버튼을 누릅니다.<br><br>
+      <h3> 선물 뽑기 </h3>
+      메인 메뉴에서 뽑기 버튼(모양 + 텍스트)을 클릭합니다.<br><br>
+      선물이 이미 등록되어있다면 카드 뽑기 단계로 넘어가고 아니면 선물을 추가하라는 메시지가 나옵니다.<br><br>
+      카드 뽑기 단계에선 3장의 카드가 등장하고 그 중 1장을 뽑으면 선물이 나타납니다.<br><br>
   </div> 
   <div>
     <h2> 어플 스크린샷 </h2>
@@ -29,19 +37,14 @@
   </div>
   <div>
     <h2> 배운 점 </h2>
-      유니티 내장 함수를 이용해 다른 폴더 안의 Sprite를 불러오고 출력해보았다.<br><br>
-      
+      C# File IO를 활용해 사진 데이터를 불러와 Unity 내장함수로 Sprite로 바꾸어 보았다.<br><br>
+      또한 선물 데이터를 json 파일로 저장해 계속 불러올 수 있게 할 수 있었다.<br><br>
+      같이 송년회를 했던 친구들의 피드백으로 사진이 밀리는 버그부터 클릭 문제, 세이브 문제 등등 많이 수정할 수 있었다.<br><br>
   </div>
   <div>
     <h2> 수정할 점 </h2>
-      폭탄 터지는 시간과 게임이 끝나는 시간 간의 오차.<br><br>
-      추가적인 컨텐츠
-   <h2> Design Picture </h2>
-   <table>
-        <td><img src = "https://postfiles.pstatic.net/MjAyMjEyMDJfMTcz/MDAxNjY5OTQ1MTYyNTcz.xRGtDzHsxcJYazZlDcthq5OryoHRCOAIo3IhGdm3-4sg.GZeppaeShzgz5M3EIWUjWJXTdv0lI3WDgx6GlKBlis8g.JPEG.tdj04131/KakaoTalk_20221202_103401185.jpg?type=w773" height = 500></td>
-        <td><img src = "https://postfiles.pstatic.net/MjAyMjEyMDJfNDYg/MDAxNjY5OTQ1MTYyNTU0.1gzPKWdthy-1HV3kGPMn-xFlpEmNQUljsOlQcorqdpwg.WTibCAZObK__76rH2hzr5SLjkZHd9qkVYY0WdQ_0MQ4g.JPEG.tdj04131/KakaoTalk_20221202_103401185_01.jpg?type=w773" height = 500></td>
-      </table>
-  </div>
+      카드 이미지 바꾸기<br><br>
+      SFX 추가<br><br>
    <div>
        <h2> 주요 코드 </h2>
        <h4> MainSM SetUp 함수 </h4>
