@@ -10,7 +10,7 @@ public class PickSM : MonoBehaviour
     RandomBox randomBox;
 
     int itemNum = -1;
-    int pickedNum;
+    int pickedNum = 1;
     int probabilty = 0;
     public int animationSpeed;
 
@@ -39,10 +39,11 @@ public class PickSM : MonoBehaviour
         gm = gameManagerObject.GetComponent<GameManager>();
         audioSource = this.GetComponent<AudioSource>();
 
-        if (randomBox.IsItemExist())
-            StartCoroutine(SetUp());
-        else
+        if (SelectedItem() == -1)
             StartCoroutine(NotSetUp());
+        else
+            StartCoroutine(SetUp());
+            
     }
     public void Pick(int num)
     {
