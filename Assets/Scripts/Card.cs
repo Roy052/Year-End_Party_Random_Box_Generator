@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    [SerializeField] PickSM pickSM;
+    [SerializeField] GachaSM gachaSM;
     [SerializeField] int num;
     [SerializeField] Sprite front, back;
 
     private void OnMouseDown()
     {
-        pickSM.Pick(num);
+        gachaSM.Pick(num);
         this.GetComponent<BoxCollider2D>().enabled = false;
         StartCoroutine(Flip());
     }
@@ -21,7 +21,7 @@ public class Card : MonoBehaviour
         tempQuat = Quaternion.Euler(0, 0, 0);
         float tempTime = 0;
 
-        pickSM.SoundON("flip");
+        gachaSM.SoundON("flip");
         while(tempTime < 0.25f)
         {
             tempQuat.eulerAngles += new Vector3(0, 90, 0) * 4 * Time.deltaTime;

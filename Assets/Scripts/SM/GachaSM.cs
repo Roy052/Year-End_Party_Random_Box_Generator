@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PickSM : MonoBehaviour
+public class GachaSM : MonoBehaviour
 {
-    GameObject gameManagerObject;
     GameManager gm;
     RandomBox randomBox;
 
@@ -34,10 +33,9 @@ public class PickSM : MonoBehaviour
         for (int i = 0; i < 3; i++)
             cards[i].SetActive(false);
 
-        gameManagerObject = GameObject.Find("GameManager");
-        randomBox = gameManagerObject.GetComponent<RandomBox>();
-        gm = gameManagerObject.GetComponent<GameManager>();
-        audioSource = this.GetComponent<AudioSource>();
+        randomBox = GameManager.instance.GetComponent<RandomBox>();
+        gm = GameManager.instance;
+        audioSource = GetComponent<AudioSource>();
 
         if (SelectedItem() == -1)
             StartCoroutine(NotSetUp());

@@ -6,22 +6,18 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     //Unique GameManager
-    private static GameManager gameManagerInstance;
+    public static GameManager instance;
     AudioSource audioSource;
     [SerializeField] AudioClip[] audioClips;
 
     void Awake()
     {
         DontDestroyOnLoad(this);
-        audioSource = this.GetComponent<AudioSource>();
-        if (gameManagerInstance == null)
-        {
-            gameManagerInstance = this;
-        }
+        audioSource = GetComponent<AudioSource>();
+        if (instance == null)
+            instance = this;
         else
-        {
             Destroy(gameObject);
-        }
     }
 
     public void AudioON(int num)
@@ -30,19 +26,28 @@ public class GameManager : MonoBehaviour
         audioSource.Play();
     }
 
-    public void MenuToPick()
+    public void ToScene(string sceneName)
     {
-        SceneManager.LoadScene("Pick");
+        SceneManager.LoadScene(sceneName);
     }
-    public void MenuToSetting()
-    {
-        SceneManager.LoadScene("SetUp");
-    }
+
     public void ToMenu()
     {
         SceneManager.LoadScene("Menu");
     }
-    public void QuitThis()
+
+
+    public void ToPickGift()
+    {
+        SceneManager.LoadScene("PickGift");
+    }
+
+    public void ToSetTicket()
+    {
+        SceneManager.LoadScene("SetTicket");
+    }
+
+    public void Quit()
     {
         Application.Quit();
     }
