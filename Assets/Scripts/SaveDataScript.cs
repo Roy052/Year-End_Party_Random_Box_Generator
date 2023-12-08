@@ -1,19 +1,17 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public class SaveDataScript : MonoBehaviour
+public class SaveDataScript
 {
-    static public void SaveIntoJson(GiftList giftListData)
+    static public void SaveIntoJson(SaveData data)
     {
-        GiftList saveData = new GiftList(giftListData);
-        string save = JsonUtility.ToJson(saveData);
+        string save = JsonUtility.ToJson(data);
         //Debug.Log(save);
         File.WriteAllText("./Assets/GiftInfo/" + "SaveData.json", save);
     }
 
-    static public GiftList LoadFromJson()
+    static public SaveData LoadFromJson()
     {
         try
         {
@@ -23,21 +21,24 @@ public class SaveDataScript : MonoBehaviour
             {
                 string json = File.ReadAllText(path);
                 //Debug.Log(json);
-                GiftList gl = JsonUtility.FromJson<GiftList>(json);
+                SaveData gl = JsonUtility.FromJson<SaveData>(json);
                 return gl;
             }
         }
         catch (FileNotFoundException e)
         {
             Debug.Log("The file was not found:" + e.Message);
+            return default;
         }
         catch (DirectoryNotFoundException e)
         {
             Debug.Log("The directory was not found: " + e.Message);
+            return default;
         }
         catch (IOException e)
         {
             Debug.Log("The file could not be opened:" + e.Message);
+            return default;
         }
         return default;
     }
@@ -75,48 +76,23 @@ public class SaveDataScript : MonoBehaviour
     }
 }
 
-
-
 [System.Serializable]
-public class GiftList
+public class SaveData
 {
-    public List<int> spriteNums;
-    public List<string> names;
-    public List<int> amounts;
+    public string dataName;
 
-    public GiftList()
-    {
-        spriteNums = new List<int>();
-        names = new List<string>();
-        amounts = new List<int>();
-    }
+    //Player
+    public List<string> playerNameList = new List<string>();
+    public List<int> playerTicketCountList = new List<int>();
 
-    public GiftList(List<int> copySpriteNums, List<string> copyNames, List<int> copyAmounts)
-    {
-        spriteNums = copySpriteNums;
-        names = copyNames;
-        amounts = copyAmounts;
-    }
+    //Gift
+    public List<string> giftNameList = new List<string>();
+    public List<int> giftGradeList = new List<int>();
+    public List<int> giftPickedList = new List<int>();
+    public List<int> giftValueList = new List<int>();
 
-    public GiftList(GiftList giftList)
-    {
-        this.spriteNums = giftList.GetSpriteNums();
-        this.names = giftList.GetNames();
-        this.amounts = giftList.GetAmounts();
-    }
-
-    public List<int> GetSpriteNums()
-    {
-        return spriteNums;
-    }
-
-    public List<string> GetNames()
-    {
-        return names;
-    }
-
-    public List<int> GetAmounts()
-    {
-        return amounts;
-    }
+    //Current State
+    public byte currentState = (byte)StateType.None;
+    public int currentGift = -1;
+    public int currentGachaOrder;
 }

@@ -5,13 +5,15 @@ using UnityEngine.UI;
 
 public class GachaSM : MonoBehaviour
 {
-    GameManager gm;
-    RandomBox randomBox;
+    public int animationSpeed;
 
+    GameManager gm;
+    SaveManager sm;
+
+    int currentPlayerNum = 0;
     int itemNum = -1;
     int pickedNum = 1;
     int probabilty = 0;
-    public int animationSpeed;
 
     [SerializeField] GameObject[] cards;
 
@@ -33,21 +35,21 @@ public class GachaSM : MonoBehaviour
         for (int i = 0; i < 3; i++)
             cards[i].SetActive(false);
 
-        randomBox = GameManager.instance.GetComponent<RandomBox>();
         gm = GameManager.instance;
+        sm = SaveManager.instance;
         audioSource = GetComponent<AudioSource>();
 
-        if (SelectedItem() == -1)
+        if (sm.data.currentGift == -1)
             StartCoroutine(NotSetUp());
         else
             StartCoroutine(SetUp());
             
     }
+
     public void Pick(int num)
     {
         pickedNum = num;
-        itemNum = SelectedItem();
-        if (itemNum == -1)
+        if (sm.IsPicked() == false)
         {
             StartCoroutine(NotSetUp());
             for (int i = 0; i < 3; i++)
@@ -55,11 +57,10 @@ public class GachaSM : MonoBehaviour
         }
         else
         {
-            randomBox.Picked(itemNum);
             for (int i = 0; i < 3; i++)
                 if (i != num) cards[i].SetActive(false);
             StartCoroutine(ItemObjectSpawn(num));
-            randomBox.SaveGifts();
+            sm.SaveData();
             repickBtn.SetActive(true);
             repickText.SetActive(true);
         }
@@ -67,30 +68,14 @@ public class GachaSM : MonoBehaviour
 
     int SelectedItem()
     {
-        int itemAmount = randomBox.names.Count;
         int tempItemNum = -1;
-
-        //Reset
-        probabilty = 0;
-        for (int i = 0; i < itemAmount; i++)
-            probabilty += randomBox.amounts[i];
+        int probabilty = sm.data.giftValueList[sm.data.currentGift];
 
         if (probabilty <= 0)
             return tempItemNum;
 
         //Debug.Log(itemAmount + ", " + probabilty);
         int temp = Random.Range(0, probabilty + 1);
-        for (int i = 0; i < itemAmount; i++)
-        {
-            temp -= randomBox.amounts[i];
-            if (temp <= 0)
-            {
-                tempItemNum = i;
-                break;
-            }
-        }
-        //Debug.Log(temp + ", " + tempItemNum);
-
         return tempItemNum;
     }
 
@@ -98,9 +83,9 @@ public class GachaSM : MonoBehaviour
     {
         itemObject.transform.position = cards[num].transform.position;
         yield return new WaitForSeconds(1.5f);
-        itemObject.GetComponent<SpriteRenderer>().sprite = randomBox.sprites[randomBox.spriteNums[itemNum]];
+        itemObject.GetComponent<SpriteRenderer>().sprite = sm.sprites[sm.data.currentGift];
         StartCoroutine(FadeManager.FadeIn(itemObject.GetComponent<SpriteRenderer>(), 1));
-        itemTexts[num].text = randomBox.names[itemNum];
+        itemTexts[num].text = sm.data.giftNameList[sm.data.currentGift];
         StartCoroutine(FadeManager.FadeIn(itemTexts[itemNum], 1.5f));
     }
 
@@ -190,7 +175,7 @@ public class GachaSM : MonoBehaviour
     {
         repickBtn.SetActive(false);
         repickText.SetActive(false);
-        if(SelectedItem() == -1)
+        if(sm.data.currentGift == -1)
         {
             StartCoroutine(NotSetUp());
             for (int i = 0; i < 3; i++)
@@ -200,8 +185,6 @@ public class GachaSM : MonoBehaviour
                 itemTexts[i].text = "";
             }
             itemObject.GetComponent<SpriteRenderer>().sprite = null;
-
-            
         }
         else
         {

@@ -3,86 +3,97 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public class RandomBox : MonoBehaviour
+public enum PickType
 {
-    public List<int> spriteNums;
-    public List<string> names;
-    public List<int> amounts;
+    NotPicked = -2,
+    Current = -1,
+}
+
+public enum StateType
+{
+    None        = 0,
+    SetTicket   = 1,
+    SetGift     = 2,
+    PickGift    = 3,
+    Gacha       = 4,
+}
+
+public class SaveManager : MonoBehaviour
+{
+    public static SaveManager instance;
 
     public List<Sprite> sprites;
+
+    public SaveData data;
+
+    void Awake()
+    {
+        DontDestroyOnLoad(this);
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+    }
+
     private void Start()
     {
-        spriteNums = new List<int>();
-        names = new List<string>();
-        amounts = new List<int>();
-
         LoadImage();
-        LoadGifts();
+        LoadData();
     }
 
-    void LoadGifts()
+    void LoadData()
     {
-        GiftList giftListData = SaveDataScript.LoadFromJson();
-        if(giftListData == null)
+        data = SaveDataScript.LoadFromJson();
+        if(data == null)
         {
-            SaveGifts();
-            Debug.Log("A");
-        }
-        else
-        {
-            spriteNums = giftListData.GetSpriteNums();
-            names = giftListData.GetNames();
-            amounts = giftListData.GetAmounts();
+            Debug.Log("No Data");
+            data = new SaveData();
         }
     }
 
-    public void SaveGifts()
+    public void SaveData()
     {
-        GiftList giftListData = new GiftList(spriteNums,names,amounts);
-        SaveDataScript.SaveIntoJson(giftListData);
+        SaveDataScript.SaveIntoJson(data);
     }
 
-    public void AddGift(int spriteNum, string name, int amount)
+    public void AddGift(string name, int grade, int value)
     {
         //이미 있는 선물인가
-        int existItemPos = -1;
-        for(int i = 0; i < names.Count; i++)
-        {
-            if(names[i] == name)
-            {
-                existItemPos = i;
-                break;
-            }
-        }
+        int existItemPos = data.giftNameList.IndexOf(name);
 
         if(existItemPos != -1)
         {
-            amounts[existItemPos] += amount; 
+            data.giftValueList[existItemPos] += value; 
         }
         else
         {
-            spriteNums.Add(spriteNum);
-            names.Add(name);
-            amounts.Add(amount);
+            data.giftNameList.Add(name);
+            data.giftGradeList.Add(grade);
+            data.giftPickedList.Add((int)PickType.NotPicked);
+            data.giftValueList.Add(value);
         }
     }
 
     public void DeleteGift(int num)
     {
-        spriteNums.RemoveAt(num);
-        names.RemoveAt(num);
-        amounts.RemoveAt(num);
+        data.giftNameList.RemoveAt(num);
+        data.giftPickedList.RemoveAt(num);
+        data.giftValueList.RemoveAt(num);
+        SaveData();
     }
 
-    public void Picked(int giftNum)
+    public void Picked(int giftNum, int playerNum)
     {
-        amounts[giftNum] -= 1;
+        data.giftPickedList[giftNum] = playerNum;
+        SaveData();
     }
 
-    public bool IsItemExist()
+    public bool IsPicked()
     {
-        if (names.Count == 0) return false;
-        else return true;
+        bool picked = Random.Range(0, data.giftValueList[data.currentGift] + 1) == 0;
+        if (picked)
+            Picked(data.currentGift, data.currentGachaOrder);
+        return picked;
     }
 
     public void LoadImage()
