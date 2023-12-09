@@ -15,27 +15,27 @@ public class GoSM : MonoBehaviour
         
     }
 
-    public void ToSetTicket()
+    public void OnSetTicket()
     {
         GameManager.instance.ToScene("SetTicket");
     }
 
-    public void ToSetGift()
-    {
-        GameManager.instance.ToScene("SetGift");
-    }
-
-    public void ToPickGift()
+    public void OnPickGift()
     {
         GameManager.instance.ToScene("PickGift");
     }
 
-    public void ToGacha()
+    public void OnGetGift()
+    {
+        GameManager.instance.ToScene("GetGift");
+    }
+
+    public void OnGacha()
     {
         GameManager.instance.ToScene("Gacha");
     }
 
-    public void ToSetUp()
+    public void OnSetUp()
     {
         GameManager.instance.ToScene("SetUp");
     }

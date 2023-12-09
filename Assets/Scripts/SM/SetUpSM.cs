@@ -5,66 +5,70 @@ using UnityEngine.UI;
 
 public class SetUpSM : MonoBehaviour
 {
-    GameObject itemObject;
-    [SerializeField] GameObject giftPrefab;
-    [SerializeField] Transform giftTransform;
-    [SerializeField] Text tableHead;
-    [SerializeField] Sprite[] giftSprites;
     GameManager gm;
     SaveManager sm;
+
+    //Player ScrollView
+    [SerializeField] GameObject playerPrefab;
+    List<Player> playerList;
+
+    //Gift ScrollView
+    [SerializeField] GameObject giftPrefab;
+    [SerializeField] Text tableHead;
+    [SerializeField] Sprite[] giftSprites;
     List<GiftButton> giftList;
 
-    //InputDatas
+    //Player InputDatas
+    [SerializeField] InputField[] inputFieldPlayer;
+
+    string tempPlayerName;
+    string tempPlayerValue;
+
+    //Gift InputDatas
     [SerializeField] Dropdown dropDownGradeNum;
-    [SerializeField] InputField[] inputFields;
+    [SerializeField] InputField[] inputFieldGift;
     [SerializeField] Text warningText;
     [SerializeField] Image giftImage;
+
     int giftCount = 0;
     int tempGradeNum;
-    string tempName, tempValue;
+    string tempGiftName;
+    string tempGiftValue;
 
     //Audio
     [SerializeField] AudioClip[] audioClips;
     AudioSource audioSource;
     private void Start()
     {
+        playerList = new List<Player>();
         giftList = new List<GiftButton>();
         gm = GameManager.instance;
         sm = SaveManager.instance;
-        audioSource = this.GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
 
         giftCount = sm.data.giftNameList.Count;
         for (int i = 0; i < giftCount; i++)
-            CreateGiftBoard(i, sm.data.giftGradeList[i], sm.data.giftNameList[i], sm.data.giftValueList[i]);
+            CreateGiftPrefab(i, sm.data.giftGradeList[i], sm.data.giftNameList[i], sm.data.giftValueList[i]);
 
         dropDownGradeNum.options.Clear();
         for (int i = 1; i <= 3; i++)
             dropDownGradeNum.options.Add(new Dropdown.OptionData() { text = Extended.ConvertToRoman(i) });
-        dropDownGradeNum.onValueChanged.AddListener(delegate { DropdownItemSelected(dropDownGradeNum); });
             
         if(sm.sprites.Count > giftCount + 1)
             giftImage.sprite = sm.sprites[giftCount + 1];
     }
 
-    void DropdownItemSelected(Dropdown dropdown)
+    public void OnAddPlayer()
     {
-        int index = dropdown.value;
-        giftImage.sprite = sm.sprites[index];
-    }
+        tempPlayerName = inputFieldPlayer[0].text;
+        tempPlayerValue = inputFieldPlayer[1].text;
 
-    public void CreateGift()
-    {
-        giftCount = giftList.Count;
-        tempGradeNum = dropDownGradeNum.value;
-        tempName = inputFields[0].text;
-        tempValue = inputFields[1].text;
-        
-        if(tempName == "")
+        if (tempPlayerName == "")
         {
             warningText.text = "이름을 입력하세요";
             StartCoroutine(FadeManager.FadeOut(warningText, 3));
         }
-        else if(tempValue == "")
+        else if (tempPlayerValue == "")
         {
             warningText.text = "수량을 입력하세요";
             StartCoroutine(FadeManager.FadeOut(warningText, 3));
@@ -73,7 +77,7 @@ public class SetUpSM : MonoBehaviour
         {
             try
             {
-                CreateGift(giftCount, tempGradeNum, tempName, int.Parse(tempValue));
+                CreateGift(giftCount, tempGradeNum, tempGiftName, int.Parse(tempGiftValue));
                 AudioON("add");
             }
             catch
@@ -84,38 +88,77 @@ public class SetUpSM : MonoBehaviour
         }
     }
 
-    public void CreateGift(int num, int giftGrade, string giftName,int giftValue)
+    public void OnAddGift()
     {
-        bool itemExist = false;
-        int itemPos = -1;
-        for(int i = 0; i < giftList.Count; i++)
+        giftCount = giftList.Count;
+        tempGradeNum = dropDownGradeNum.value;
+        tempGiftName = inputFieldGift[0].text;
+        tempGiftValue = inputFieldGift[1].text;
+        
+        if(tempGiftName == "")
         {
-            if (sm.data.giftNameList[i] == giftName)
-            {
-                itemExist = true;
-                itemPos = i;
-                break;
-            }
+            warningText.text = "이름을 입력하세요";
+            StartCoroutine(FadeManager.FadeOut(warningText, 3));
         }
-
-        sm.AddGift(giftName, giftGrade, giftValue);
-
-        if (itemExist)
+        else if(tempGiftValue == "")
         {
-            giftList[itemPos].transform.GetChild(1).GetComponent<Text>().text = sm.data.giftValueList[itemPos] + "티켓";
+            warningText.text = "수량을 입력하세요";
+            StartCoroutine(FadeManager.FadeOut(warningText, 3));
         }
         else
         {
-            CreateGiftBoard(num, giftGrade, giftName, giftValue);
+            try
+            {
+                CreateGift(giftCount, tempGradeNum, tempGiftName, int.Parse(tempGiftValue));
+                AudioON("add");
+            }
+            catch
+            {
+                warningText.text = "수량은 숫자로 입력하세요";
+                StartCoroutine(FadeManager.FadeOut(warningText, 3));
+            }
         }
     }
 
-    public void CreateGiftBoard(int num, int giftGrade, string giftName, int giftValue)
+    public void CreatePlayer(string playerName, int ticketCount)
     {
-        GameObject temp = Instantiate(giftPrefab, giftTransform);
-        temp.transform.GetChild(0).GetComponent<Text>().text = $"- {Extended.ConvertToRoman(giftGrade)} -";
+        int idx = sm.data.playerNameList.IndexOf(playerName);
+        if (idx == -1)
+            CreatePlayerPrefab(playerName, ticketCount);
+        else
+            playerList[idx].transform.GetChild(2).GetComponent<Text>().text = ticketCount + "티켓";
+    }
+
+    public void CreateGift(int num, int giftGrade, string giftName,int giftValue)
+    {
+        int idx = sm.data.giftNameList.IndexOf(giftName);
+
+        sm.AddGift(giftName, giftGrade, giftValue);
+        if (idx == -1)
+            CreateGiftPrefab(num, giftGrade, giftName, giftValue);
+        else
+            giftList[idx].transform.GetChild(2).GetComponent<Text>().text = sm.data.giftValueList[idx] + "티켓";
+    }
+
+    public void CreatePlayerPrefab(string playerName, int ticketCount)
+    {
+        GameObject temp = Instantiate(playerPrefab, playerPrefab.transform.parent);
+        temp.transform.GetChild(1).GetComponent<Text>().text = playerName;
+        temp.transform.GetChild(2).GetComponent<Text>().text = ticketCount.ToString();
+        temp.SetActive(true);
+
+        Player player = temp.GetComponent<Player>();
+        playerList.Add(player);
+        AudioON("add");
+    }
+
+    public void CreateGiftPrefab(int num, int giftGrade, string giftName, int giftValue)
+    {
+        GameObject temp = Instantiate(giftPrefab, giftPrefab.transform.parent);
+        temp.transform.GetChild(0).GetComponent<Text>().text = $"- {Extended.ConvertToRoman(giftGrade + 1)} -";
         temp.transform.GetChild(1).GetComponent<Text>().text = giftName;
         temp.transform.GetChild(2).GetComponent<Text>().text = giftValue + "개";
+        temp.SetActive(true);
 
         GiftButton giftButton = temp.GetComponent<GiftButton>();
         giftButton.num = num;
