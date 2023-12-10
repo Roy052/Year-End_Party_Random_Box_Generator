@@ -77,7 +77,7 @@ public class SetUpSM : MonoBehaviour
         {
             try
             {
-                CreateGift(giftCount, tempGradeNum, tempGiftName, int.Parse(tempGiftValue));
+                CreatePlayer(tempPlayerName, int.Parse(tempPlayerValue));
                 AudioON("add");
             }
             catch

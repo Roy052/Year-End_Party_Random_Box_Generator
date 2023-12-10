@@ -1025,7 +1025,7 @@ GameObject:
   - component: {fileID: 305548264}
   - component: {fileID: 305548263}
   m_Layer: 5
-  m_Name: InputFieldGiftValue
+  m_Name: InputFieldPlayerValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2405,7 +2405,7 @@ GameObject:
   - component: {fileID: 807714451}
   - component: {fileID: 807714450}
   m_Layer: 5
-  m_Name: InputFieldGiftName
+  m_Name: InputFieldPlayerName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3572,7 +3572,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2012290173}
         m_TargetAssemblyTypeName: SetUpSM, Assembly-CSharp
-        m_MethodName: CreateGift
+        m_MethodName: OnAddGift
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5267,7 +5267,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2012290173}
         m_TargetAssemblyTypeName: SetUpSM, Assembly-CSharp
-        m_MethodName: CreateGift
+        m_MethodName: OnAddPlayer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6036,7 +6036,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb6f69c9b864d6a4f9e45010ce61eb7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 0}
+  playerPrefab: {fileID: 1497388681}
   giftPrefab: {fileID: 3239349124883268367}
   tableHead: {fileID: 0}
   giftSprites: []
@@ -6044,7 +6044,9 @@ MonoBehaviour:
   - {fileID: 807714450}
   - {fileID: 305548263}
   dropDownGradeNum: {fileID: 195409708}
-  inputFieldGift: []
+  inputFieldGift:
+  - {fileID: 2096239010}
+  - {fileID: 310656251}
   warningText: {fileID: 659026006}
   giftImage: {fileID: 1031299484}
   audioClips:
@@ -6675,7 +6677,7 @@ GameObject:
   - component: {fileID: 6737330912320493717}
   - component: {fileID: 399377998936572741}
   m_Layer: 5
-  m_Name: GiftList
+  m_Name: GiftPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
