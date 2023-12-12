@@ -3,40 +3,48 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GoSM : MonoBehaviour
+public class GoSM : Singleton
 {
     public Player playerPrefab;
     public Text textInfoName;
 
     public GameObject empty;
 
-    private void Start()
+    private void Awake()
     {
-        
+        if (goSM == null)
+            goSM = this;
+        else
+            Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        goSM = null;
     }
 
     public void OnSetTicket()
     {
-        GameManager.instance.ToScene("SetTicket");
+        gm.ToScene("SetTicket");
     }
 
     public void OnPickGift()
     {
-        GameManager.instance.ToScene("PickGift");
+        gm.ToScene("PickGift");
     }
 
     public void OnGetGift()
     {
-        GameManager.instance.ToScene("GetGift");
+        gm.ToScene("GetGift");
     }
 
     public void OnGacha()
     {
-        GameManager.instance.ToScene("Gacha");
+        gm.ToScene("Gacha");
     }
 
     public void OnSetUp()
     {
-        GameManager.instance.ToScene("SetUp");
+        gm.ToScene("SetUp");
     }
 }

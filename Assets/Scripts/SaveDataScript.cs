@@ -4,6 +4,8 @@ using System.IO;
 
 public class SaveDataScript
 {
+    const string path = "./Assets/Save/SaveData.json";
+
     static public void SaveIntoJson(SaveData data)
     {
         string save = JsonUtility.ToJson(data);
@@ -15,7 +17,6 @@ public class SaveDataScript
     {
         try
         {
-            string path = "./Assets/GiftInfo/SaveData.json";
             //Debug.Log(path);
             if (File.Exists(path))
             {
@@ -47,12 +48,10 @@ public class SaveDataScript
     {
         try
         {
-            string path = "./Assets/Save/SaveData.json";
-            //Debug.Log(path);
             if (File.Exists(path))
             {
                 File.Delete(path);
-                SaveDataScript.RefreshEditor();
+                RefreshEditor();
             }
         }
         catch (FileNotFoundException e)

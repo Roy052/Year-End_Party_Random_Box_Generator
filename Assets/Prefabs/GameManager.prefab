@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 129cf1f8c36f2404f9774480f9baca04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objConfirmMsg: {fileID: 2693590556003642515, guid: 122203e5a9f5d3b4baebea1d313babaf, type: 3}
   audioClips: []
 --- !u!114 &146852431054214975
 MonoBehaviour:
@@ -58,5 +59,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02e288b3dcd9a2647b32f2abbc6c47f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  names: []
-  amounts: 
+  sprites: []
+  data:
+    dataName: 
+    playerNameList: []
+    playerTicketCountList: 
+    giftNameList: []
+    giftGradeList: 
+    giftPickedList: 
+    giftValueList: 
+    currentState: 0
+    currentGift: -1
+    currentGachaOrder: 0

@@ -18,10 +18,8 @@ public enum StateType
     Gacha       = 4,
 }
 
-public class SaveManager : MonoBehaviour
+public class SaveManager : Singleton
 {
-    public static SaveManager instance;
-
     public List<Sprite> sprites;
 
     public SaveData data;
@@ -29,8 +27,8 @@ public class SaveManager : MonoBehaviour
     void Awake()
     {
         DontDestroyOnLoad(this);
-        if (instance == null)
-            instance = this;
+        if (sm == null)
+            sm = this;
         else
             Destroy(gameObject);
     }
@@ -54,6 +52,22 @@ public class SaveManager : MonoBehaviour
     public void SaveData()
     {
         SaveDataScript.SaveIntoJson(data);
+    }
+
+    public void AddPlayer(string name, int value)
+    {
+        //이미 있는 유저인가
+        int existPlayerPos = data.playerNameList.IndexOf(name);
+
+        if (existPlayerPos != -1)
+        {
+            data.playerTicketCountList[existPlayerPos] += value;
+        }
+        else
+        {
+            data.playerNameList.Add(name);
+            data.playerTicketCountList.Add(value);
+        }
     }
 
     public void AddGift(string name, int grade, int value)

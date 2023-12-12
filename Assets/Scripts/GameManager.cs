@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton
 {
     //Unique GameManager
-    public static GameManager instance;
+    public GameObject objConfirmMsg;
     AudioSource audioSource;
     [SerializeField] AudioClip[] audioClips;
 
@@ -14,10 +14,16 @@ public class GameManager : MonoBehaviour
     {
         DontDestroyOnLoad(this);
         audioSource = GetComponent<AudioSource>();
-        if (instance == null)
-            instance = this;
+        if (gm == null)
+            gm = this;
         else
             Destroy(gameObject);
+    }
+
+    public ConfirmMsg OpenConfirmMsg()
+    {
+        GameObject temp = Instantiate(objConfirmMsg);
+        return temp.GetComponent<ConfirmMsg>();
     }
 
     public void AudioON(int num)

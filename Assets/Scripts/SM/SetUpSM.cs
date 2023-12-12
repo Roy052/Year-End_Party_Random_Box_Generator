@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SetUpSM : MonoBehaviour
+public class SetUpSM : Singleton
 {
-    GameManager gm;
-    SaveManager sm;
-
     //Player ScrollView
     [SerializeField] GameObject playerPrefab;
     List<Player> playerList;
@@ -38,12 +35,24 @@ public class SetUpSM : MonoBehaviour
     //Audio
     [SerializeField] AudioClip[] audioClips;
     AudioSource audioSource;
+
+    private void Awake()
+    {
+        if (setUpSM == null)
+            setUpSM = this;
+        else
+            Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        setUpSM = null;
+    }
+
     private void Start()
     {
         playerList = new List<Player>();
         giftList = new List<GiftButton>();
-        gm = GameManager.instance;
-        sm = SaveManager.instance;
         audioSource = GetComponent<AudioSource>();
 
         giftCount = sm.data.giftNameList.Count;
@@ -123,6 +132,8 @@ public class SetUpSM : MonoBehaviour
     public void CreatePlayer(string playerName, int ticketCount)
     {
         int idx = sm.data.playerNameList.IndexOf(playerName);
+
+        sm.AddPlayer(playerName, ticketCount);
         if (idx == -1)
             CreatePlayerPrefab(playerName, ticketCount);
         else
@@ -188,11 +199,10 @@ public class SetUpSM : MonoBehaviour
     public void ResetGifts()
     {
         AudioON("reset");
+        
         while (giftList.Count != 0)
             DeleteGift(0);
-        
-
-        //SaveDataScript.DeleteSave();
+        SaveDataScript.DeleteSave();
     }
 
     public void ReloadImage()

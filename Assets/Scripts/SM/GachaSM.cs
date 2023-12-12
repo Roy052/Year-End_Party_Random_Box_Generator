@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GachaSM : MonoBehaviour
+public class GachaSM : Singleton
 {
     public int animationSpeed;
-
-    GameManager gm;
-    SaveManager sm;
 
     int currentPlayerNum = 0;
     int itemNum = -1;
@@ -35,8 +32,6 @@ public class GachaSM : MonoBehaviour
         for (int i = 0; i < 3; i++)
             cards[i].SetActive(false);
 
-        gm = GameManager.instance;
-        sm = SaveManager.instance;
         audioSource = GetComponent<AudioSource>();
 
         if (sm.data.currentGift == -1)
