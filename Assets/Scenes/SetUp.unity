@@ -6047,7 +6047,8 @@ MonoBehaviour:
   inputFieldGift:
   - {fileID: 2096239010}
   - {fileID: 310656251}
-  warningText: {fileID: 659026006}
+  textWarningPlayer: {fileID: 1086262568}
+  textWarningGift: {fileID: 659026006}
   giftImage: {fileID: 1031299484}
   audioClips:
   - {fileID: 8300000, guid: af66903757ec7c94d9d1668c10e592c5, type: 3}

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +14,11 @@ public class GoSM : Singleton
             goSM = this;
         else
             Destroy(gameObject);
+    }
+
+    private void Start()
+    {
+        textInfoName.text = sm.data.dataName;
     }
 
     private void OnDestroy()

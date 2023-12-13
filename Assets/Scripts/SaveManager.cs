@@ -49,6 +49,11 @@ public class SaveManager : Singleton
         }
     }
 
+    public void DataReset()
+    {
+        data = new SaveData();
+    }
+
     public void SaveData()
     {
         SaveDataScript.SaveIntoJson(data);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -8,9 +9,11 @@ public class SaveDataScript
 
     static public void SaveIntoJson(SaveData data)
     {
+        data.dataName = $"Save_{DateTime.Now}";
+
         string save = JsonUtility.ToJson(data);
         //Debug.Log(save);
-        File.WriteAllText("./Assets/GiftInfo/" + "SaveData.json", save);
+        File.WriteAllText(path, save);
     }
 
     static public SaveData LoadFromJson()

@@ -19,12 +19,12 @@ public class ConfirmMsg : MonoBehaviour
     public void OnConfirm()
     {
         funcConfirm?.Invoke();
-        Destroy(this);
+        Destroy(gameObject);
     }
 
     public void OnCancel()
     {
         funcCancel?.Invoke();
-        Destroy(this);
+        Destroy(gameObject);
     }
 }

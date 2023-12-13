@@ -24,7 +24,8 @@ public class SetUpSM : Singleton
     //Gift InputDatas
     [SerializeField] Dropdown dropDownGradeNum;
     [SerializeField] InputField[] inputFieldGift;
-    [SerializeField] Text warningText;
+    [SerializeField] Text textWarningPlayer;
+    [SerializeField] Text textWarningGift;
     [SerializeField] Image giftImage;
 
     int giftCount = 0;
@@ -74,13 +75,13 @@ public class SetUpSM : Singleton
 
         if (tempPlayerName == "")
         {
-            warningText.text = "이름을 입력하세요";
-            StartCoroutine(FadeManager.FadeOut(warningText, 3));
+            textWarningPlayer.text = "이름을 입력하세요";
+            StartCoroutine(FadeManager.FadeOut(textWarningGift, 3));
         }
         else if (tempPlayerValue == "")
         {
-            warningText.text = "수량을 입력하세요";
-            StartCoroutine(FadeManager.FadeOut(warningText, 3));
+            textWarningPlayer.text = "수량을 입력하세요";
+            StartCoroutine(FadeManager.FadeOut(textWarningGift, 3));
         }
         else
         {
@@ -91,8 +92,8 @@ public class SetUpSM : Singleton
             }
             catch
             {
-                warningText.text = "수량은 숫자로 입력하세요";
-                StartCoroutine(FadeManager.FadeOut(warningText, 3));
+                textWarningPlayer.text = "수량은 숫자로 입력하세요";
+                StartCoroutine(FadeManager.FadeOut(textWarningGift, 3));
             }
         }
     }
@@ -106,13 +107,13 @@ public class SetUpSM : Singleton
         
         if(tempGiftName == "")
         {
-            warningText.text = "이름을 입력하세요";
-            StartCoroutine(FadeManager.FadeOut(warningText, 3));
+            textWarningGift.text = "이름을 입력하세요";
+            StartCoroutine(FadeManager.FadeOut(textWarningGift, 3));
         }
         else if(tempGiftValue == "")
         {
-            warningText.text = "수량을 입력하세요";
-            StartCoroutine(FadeManager.FadeOut(warningText, 3));
+            textWarningGift.text = "수량을 입력하세요";
+            StartCoroutine(FadeManager.FadeOut(textWarningGift, 3));
         }
         else
         {
@@ -123,8 +124,8 @@ public class SetUpSM : Singleton
             }
             catch
             {
-                warningText.text = "수량은 숫자로 입력하세요";
-                StartCoroutine(FadeManager.FadeOut(warningText, 3));
+                textWarningGift.text = "수량은 숫자로 입력하세요";
+                StartCoroutine(FadeManager.FadeOut(textWarningGift, 3));
             }
         }
     }
@@ -199,10 +200,13 @@ public class SetUpSM : Singleton
     public void ResetGifts()
     {
         AudioON("reset");
-        
-        while (giftList.Count != 0)
-            DeleteGift(0);
-        SaveDataScript.DeleteSave();
+
+        var msg = gm.OpenConfirmMsg();
+        msg.Set("데이터 리셋", () =>
+        {
+            sm.DataReset();
+            SaveDataScript.DeleteSave();
+        });
     }
 
     public void ReloadImage()
