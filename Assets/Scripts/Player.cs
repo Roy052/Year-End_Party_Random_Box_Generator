@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    public Button btnDelete;
     public Text textName;
     public Text textTicketCount;
 

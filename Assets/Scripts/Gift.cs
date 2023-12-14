@@ -1,18 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Gift : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Image icon;
+    public Image imgX;
+    public Image imgCurrent;
+    public Text textName;
+    public Text textCount;
 
-    // Update is called once per frame
-    void Update()
+    public void Set(int num, string name, int ticketCount, int picked)
     {
-        
+        icon.sprite = Singleton.sm.sprites[num];
+        textName.text = name;
+        textCount.text = ticketCount.ToString();
+
+        imgX.gameObject.SetActive(picked != (int)PickType.NotPicked && picked != (int)PickType.Current);
+        imgCurrent.gameObject.SetActive(picked == (int)PickType.Current);
     }
 }
