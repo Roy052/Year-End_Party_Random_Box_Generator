@@ -9,6 +9,13 @@ public enum PickType
     Current = -1,
 }
 
+public enum GradeType
+{
+    GradeOne = 0,
+    GradeTwo = 1,
+    GradeThree = 2,
+}
+
 public enum StateType
 {
     None        = 0,
@@ -82,14 +89,14 @@ public class SaveManager : Singleton
 
         if(existItemPos != -1)
         {
-            data.giftValueList[existItemPos] += value; 
+            data.giftTicketCountList[existItemPos] += value; 
         }
         else
         {
             data.giftNameList.Add(name);
             data.giftGradeList.Add(grade);
             data.giftPickedList.Add((int)PickType.NotPicked);
-            data.giftValueList.Add(value);
+            data.giftTicketCountList.Add(value);
         }
     }
 
@@ -97,7 +104,7 @@ public class SaveManager : Singleton
     {
         data.giftNameList.RemoveAt(num);
         data.giftPickedList.RemoveAt(num);
-        data.giftValueList.RemoveAt(num);
+        data.giftTicketCountList.RemoveAt(num);
         SaveData();
     }
 
@@ -109,7 +116,7 @@ public class SaveManager : Singleton
 
     public bool IsPicked()
     {
-        bool picked = Random.Range(0, data.giftValueList[data.currentGift] + 1) == 0;
+        bool picked = Random.Range(0, data.giftTicketCountList[data.currentGift] + 1) == 0;
         if (picked)
             Picked(data.currentGift, data.currentGachaOrder);
         return picked;

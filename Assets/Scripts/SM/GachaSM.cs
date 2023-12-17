@@ -64,7 +64,7 @@ public class GachaSM : Singleton
     int SelectedItem()
     {
         int tempItemNum = -1;
-        int probabilty = sm.data.giftValueList[sm.data.currentGift];
+        int probabilty = sm.data.giftTicketCountList[sm.data.currentGift];
 
         if (probabilty <= 0)
             return tempItemNum;

@@ -58,7 +58,7 @@ public class SetUpSM : Singleton
 
         giftCount = sm.data.giftNameList.Count;
         for (int i = 0; i < giftCount; i++)
-            CreateGiftPrefab(i, sm.data.giftGradeList[i], sm.data.giftNameList[i], sm.data.giftValueList[i]);
+            CreateGiftPrefab(i, sm.data.giftGradeList[i], sm.data.giftNameList[i], sm.data.giftTicketCountList[i]);
 
         dropDownGradeNum.options.Clear();
         for (int i = 1; i <= 3; i++)
@@ -149,7 +149,7 @@ public class SetUpSM : Singleton
         if (idx == -1)
             CreateGiftPrefab(num, giftGrade, giftName, giftValue);
         else
-            giftList[idx].transform.GetChild(2).GetComponent<Text>().text = sm.data.giftValueList[idx] + "티켓";
+            giftList[idx].transform.GetChild(2).GetComponent<Text>().text = sm.data.giftTicketCountList[idx] + "티켓";
     }
 
     public void CreatePlayerPrefab(string playerName, int ticketCount)
@@ -167,13 +167,9 @@ public class SetUpSM : Singleton
     public void CreateGiftPrefab(int num, int giftGrade, string giftName, int giftValue)
     {
         GameObject temp = Instantiate(giftPrefab, giftPrefab.transform.parent);
-        temp.transform.GetChild(0).GetComponent<Text>().text = $"- {Extended.ConvertToRoman(giftGrade + 1)} -";
-        temp.transform.GetChild(1).GetComponent<Text>().text = giftName;
-        temp.transform.GetChild(2).GetComponent<Text>().text = giftValue + "개";
         temp.SetActive(true);
-
         GiftButton giftButton = temp.GetComponent<GiftButton>();
-        giftButton.num = num;
+        giftButton.Set(num, giftGrade, giftName, giftValue, -2);
         giftButton.setUpSM = this;
         giftList.Add(giftButton);
         AudioON("add");
@@ -182,7 +178,7 @@ public class SetUpSM : Singleton
     public void DeleteGift(int num)
     {
         sm.DeleteGift(num);
-        Destroy(giftList[num]);
+        Destroy(giftList[num].gameObject);
         giftList.RemoveAt(num);
 
         for (int i = num; i < giftList.Count; i++)

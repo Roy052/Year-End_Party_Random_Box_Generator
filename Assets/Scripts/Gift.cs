@@ -3,15 +3,19 @@ using UnityEngine.UI;
 
 public class Gift : MonoBehaviour
 {
+    public int num;
+
     public Image icon;
     public Image imgX;
     public Image imgCurrent;
+    public Text textGrade;
     public Text textName;
     public Text textCount;
 
-    public void Set(int num, string name, int ticketCount, int picked)
+    public void Set(int num, int gradeNum, string name, int ticketCount, int picked)
     {
         icon.sprite = Singleton.sm.sprites[num];
+        textGrade.text = $"[{Extended.ConvertToRoman(gradeNum + 1)}]";
         textName.text = name;
         textCount.text = ticketCount.ToString();
 

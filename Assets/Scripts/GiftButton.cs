@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GiftButton : MonoBehaviour
+public class GiftButton : Gift
 {
-    public int num;
     public SetUpSM setUpSM;
     public void DeleteGift()
     {

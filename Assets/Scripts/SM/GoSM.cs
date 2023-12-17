@@ -35,7 +35,7 @@ public class GoSM : Singleton
             GameObject temp = Instantiate(giftPrefab, giftPrefab.transform.parent);
             temp.SetActive(true);
             Gift tempGift = temp.GetComponent<Gift>();
-            tempGift.Set(i, sm.data.giftNameList[i], sm.data.giftValueList[i], sm.data.giftPickedList[i]);
+            tempGift.Set(i, sm.data.giftGradeList[i], sm.data.giftNameList[i], sm.data.giftTicketCountList[i], sm.data.giftPickedList[i]);
         }
 
         empty.SetActive(string.IsNullOrEmpty(sm.data.dataName));
@@ -69,5 +69,10 @@ public class GoSM : Singleton
     public void OnSetUp()
     {
         gm.ToScene("SetUp");
+    }
+
+    public void OnMenu()
+    {
+        gm.ToScene("Menu");
     }
 }

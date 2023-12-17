@@ -91,7 +91,7 @@ public class SaveData
     public List<string> giftNameList = new List<string>();
     public List<int> giftGradeList = new List<int>();
     public List<int> giftPickedList = new List<int>();
-    public List<int> giftValueList = new List<int>();
+    public List<int> giftTicketCountList = new List<int>();
 
     //Current State
     public byte currentState = (byte)StateType.None;
