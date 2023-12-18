@@ -8,8 +8,12 @@ public class PickGiftSM : Singleton
 {
     public List<Image> imgList;
     public GameObject giftPrefab;
+    public ParticleSystem ps;
+    public Image imgCurrent;
 
     Dictionary<int, List<int>> giftDict = new Dictionary<int, List<int>>();
+    List<GameObject> currentGiftList = new List<GameObject>();
+    int currentNum = 0;
     
     private void Awake()
     {
@@ -32,7 +36,8 @@ public class PickGiftSM : Singleton
         int count = sm.data.giftNameList.Count;
         for (int i = 0; i < count; i++)
             if(sm.data.giftPickedList[i] == (int)PickType.NotPicked)
-                giftDict[i].Add(i);
+                giftDict[sm.data.giftGradeList[i]].Add(i);
+        
     }
 
     public void Set()
@@ -45,11 +50,13 @@ public class PickGiftSM : Singleton
             GameObject temp = Instantiate(giftPrefab, giftPrefab.transform.parent);
             Gift tempGift = temp.GetComponent<Gift>();
             tempGift.Set(i, sm.data.giftGradeList[i], sm.data.giftNameList[i], sm.data.giftTicketCountList[i], sm.data.giftPickedList[i]);
+            currentGiftList.Add(temp);
         }
     }
 
-    public void PickGift(int num)
+    public void OnPickGift(int num)
     {
+        currentNum = num;
         int randVal = UnityEngine.Random.Range(0, giftDict[num].Count);
         int giftNum = giftDict[num][randVal];
         sm.data.giftPickedList[giftNum] = (int)PickType.Current;
@@ -72,10 +79,40 @@ public class PickGiftSM : Singleton
             rect.localScale = tempVec;
             yield return null;
         }
+
+        float effectTime;
+        tempVec = Vector3.zero;
+        float rotVal = 0;
+        for(int i = 0; i < 4; i++)
+        {
+            effectTime = 0;
+            while(effectTime < 0.5f)
+            {
+                rotVal += 20 * Time.deltaTime * (i % 2 == 0  ? -1 : 1) * (effectTime > 0.25f ? -1 : 1);
+                tempVec.z = rotVal;
+                rect.localEulerAngles = tempVec;
+                effectTime += Time.deltaTime;
+                yield return null;
+            }
+        }
         yield return null;
+        ps.Play();
 
         GameObject temp = Instantiate(giftPrefab, giftPrefab.transform.parent);
         Gift tempGift = temp.GetComponent<Gift>();
         tempGift.Set(giftNum, sm.data.giftGradeList[giftNum], sm.data.giftNameList[giftNum], sm.data.giftTicketCountList[giftNum], sm.data.giftPickedList[giftNum]);
+        currentGiftList.Add(temp);
+
+        imgCurrent.sprite = sm.sprites[giftNum];
+        imgCurrent.gameObject.SetActive(true);
+    }
+
+    public void OnClickGift()
+    {
+        imgList[currentNum].rectTransform.localScale = new Vector3(1, 1, 1);
+        for (int i = 0; i < imgList.Count; i++)
+            imgList[i].gameObject.SetActive(true);
+        currentGiftList[currentGiftList.Count - 1].SetActive(true);
+        imgCurrent.gameObject.SetActive(false);
     }
 }

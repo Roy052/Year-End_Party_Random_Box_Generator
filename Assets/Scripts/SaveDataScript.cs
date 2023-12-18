@@ -14,6 +14,7 @@ public class SaveDataScript
         string save = JsonUtility.ToJson(data);
         //Debug.Log(save);
         File.WriteAllText(path, save);
+        RefreshEditor();
     }
 
     static public SaveData LoadFromJson()
