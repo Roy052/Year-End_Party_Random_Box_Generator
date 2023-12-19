@@ -10,6 +10,7 @@ public class Singleton : MonoBehaviour
     public static GoSM goSM;
     public static MenuSM menuSM;
     public static PickGiftSM pickGiftSM;
-    public static SetGiftSM setGiftSM;
+    public static GetGiftSM getGiftSM;
     public static SetUpSM setUpSM;
+    public static SetTicketSM setTicketSM;
 }

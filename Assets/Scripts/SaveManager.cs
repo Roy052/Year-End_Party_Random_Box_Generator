@@ -122,6 +122,12 @@ public class SaveManager : Singleton
         return picked;
     }
 
+    public void ChangeTicket(int playerNum, int num)
+    {
+        data.playerTicketCountList[playerNum] = num;
+        SaveData();
+    }
+
     public void LoadImage()
     {
         sprites = new List<Sprite>();

@@ -60,6 +60,7 @@ public class PickGiftSM : Singleton
         int randVal = UnityEngine.Random.Range(0, giftDict[num].Count);
         int giftNum = giftDict[num][randVal];
         sm.data.giftPickedList[giftNum] = (int)PickType.Current;
+        imgList[num].GetComponent<Button>().enabled = false;
         StartCoroutine(ShowPickedGift(num, giftNum));
     }
 
@@ -114,5 +115,6 @@ public class PickGiftSM : Singleton
             imgList[i].gameObject.SetActive(true);
         currentGiftList[currentGiftList.Count - 1].SetActive(true);
         imgCurrent.gameObject.SetActive(false);
+        imgList[currentNum].GetComponent<Button>().enabled = true;
     }
 }
