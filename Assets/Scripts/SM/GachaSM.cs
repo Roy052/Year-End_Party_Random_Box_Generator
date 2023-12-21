@@ -27,6 +27,12 @@ public class GachaSM : Singleton
     //Repick
     [SerializeField] GameObject repickBtn, repickText;
 
+    //Top UI
+    public Image currentGift;
+    public GameObject playerPrefab;
+
+    List<PlayerWithToggle> playerList = new List<PlayerWithToggle>();
+
     private void Start()
     {
         for (int i = 0; i < 3; i++)

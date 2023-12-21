@@ -98,4 +98,5 @@ public class SaveData
     public byte currentState = (byte)StateType.None;
     public int currentGift = -1;
     public int currentGachaOrder;
+    public int currentPlayer = -1;
 }
