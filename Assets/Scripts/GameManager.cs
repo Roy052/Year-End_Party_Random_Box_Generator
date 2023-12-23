@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton
 {
-    //Unique GameManager
     public GameObject objConfirmMsg;
     AudioSource audioSource;
     [SerializeField] AudioClip[] audioClips;
@@ -35,22 +34,6 @@ public class GameManager : Singleton
     public void ToScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
-    }
-
-    public void ToMenu()
-    {
-        SceneManager.LoadScene("Menu");
-    }
-
-
-    public void ToPickGift()
-    {
-        SceneManager.LoadScene("PickGift");
-    }
-
-    public void ToSetTicket()
-    {
-        SceneManager.LoadScene("SetTicket");
     }
 
     public void Quit()

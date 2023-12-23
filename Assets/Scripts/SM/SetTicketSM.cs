@@ -30,4 +30,14 @@ public class SetTicketSM : Singleton
             pbp.Set(i, sm.data.playerNameList[i], sm.data.playerTicketCountList[i]);
         }
     }
+
+    public void OnBack()
+    {
+        gm.ToScene("Go");
+    }
+
+    public void OnHome()
+    {
+        gm.ToScene("Menu");
+    }
 }

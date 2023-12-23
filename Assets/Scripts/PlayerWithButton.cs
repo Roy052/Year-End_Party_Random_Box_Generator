@@ -21,7 +21,7 @@ public class PlayerWithButton : Player
     public void OnChangeTicket(int ticketCount)
     {
         int count = this.ticketCount + ticketCount;
-        Singleton.sm.ChangeTicket(playerNum, count);
+        Singleton.sm.ChangeTicket(playerNum, ticketCount);
         this.ticketCount = count;
         inputTicketCount.text = count.ToString();
     }
@@ -31,7 +31,7 @@ public class PlayerWithButton : Player
         try
         {
             int count = int.Parse(ticketCountStr);
-            Singleton.sm.ChangeTicket(playerNum, count);
+            Singleton.sm.ChangeTicket(playerNum, count - Singleton.sm.data.playerTicketCountList[playerNum]);
             this.ticketCount = count;
             inputTicketCount.text = count.ToString();
         }

@@ -117,4 +117,14 @@ public class PickGiftSM : Singleton
         imgCurrent.gameObject.SetActive(false);
         imgList[currentNum].GetComponent<Button>().enabled = true;
     }
+
+    public void OnBack()
+    {
+        gm.ToScene("Go");
+    }
+
+    public void OnHome()
+    {
+        gm.ToScene("Menu");
+    }
 }

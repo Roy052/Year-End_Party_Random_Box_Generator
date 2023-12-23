@@ -214,7 +214,7 @@ public class SetUpSM : Singleton
 
     public void ToMenu()
     {
-        gm.ToMenu();
+        gm.ToScene("Menu");
     }
 
     void AudioON(string clipName)

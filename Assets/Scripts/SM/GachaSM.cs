@@ -7,10 +7,8 @@ public class GachaSM : Singleton
 {
     public int animationSpeed;
 
-    int currentPlayerNum = 0;
-    int itemNum = -1;
+    int currentPlayerOrder = 0;
     int pickedNum = 1;
-    int probabilty = 0;
 
     [SerializeField] GameObject[] cards;
 
@@ -28,10 +26,14 @@ public class GachaSM : Singleton
     [SerializeField] GameObject repickBtn, repickText;
 
     //Top UI
+    public Sprite spriteNotPicked;
     public Image currentGift;
     public GameObject playerPrefab;
 
     List<PlayerWithToggle> playerList = new List<PlayerWithToggle>();
+    List<int> currentGiftNumList = new List<int>();
+    List<int> currengPlayerNumList = new List<int>();
+    List<int> ticketValueByPlayer = new List<int>();
 
     private void Start()
     {
@@ -40,11 +42,14 @@ public class GachaSM : Singleton
 
         audioSource = GetComponent<AudioSource>();
 
-        if (sm.data.currentGift == -1)
+        for (int i = 0; i < sm.data.giftNameList.Count; i++)
+            if (sm.data.giftPickedList[i] == (int)PickType.Current)
+                currentGiftNumList.Add(i);
+
+        if (currentGiftNumList.Count == 0)
             StartCoroutine(NotSetUp());
         else
             StartCoroutine(SetUp());
-            
     }
 
     public void Pick(int num)
@@ -60,34 +65,35 @@ public class GachaSM : Singleton
         {
             for (int i = 0; i < 3; i++)
                 if (i != num) cards[i].SetActive(false);
-            StartCoroutine(ItemObjectSpawn(num));
-            sm.SaveData();
+
+            bool isGiftPicked = IsGiftPicked();
+            StartCoroutine(ItemObjectSpawn(num, isGiftPicked));
+            if (isGiftPicked)
+                sm.Picked(currentGiftNumList[0], currengPlayerNumList[currentPlayerOrder]);
+            else
+                sm.ChangeGiftTicket(currentGiftNumList[0], -1);
+            currentGiftNumList.RemoveAt(0);
+
             repickBtn.SetActive(true);
             repickText.SetActive(true);
         }
     }
 
-    int SelectedItem()
+    bool IsGiftPicked()
     {
-        int tempItemNum = -1;
         int probabilty = sm.data.giftTicketCountList[sm.data.currentGift];
-
-        if (probabilty <= 0)
-            return tempItemNum;
-
-        //Debug.Log(itemAmount + ", " + probabilty);
-        int temp = Random.Range(0, probabilty + 1);
-        return tempItemNum;
+        if (probabilty == 0) return false;
+        return Random.Range(0, probabilty + 1) == 0;
     }
 
-    IEnumerator ItemObjectSpawn(int num)
+    IEnumerator ItemObjectSpawn(int num, bool isGiftPicked)
     {
         itemObject.transform.position = cards[num].transform.position;
         yield return new WaitForSeconds(1.5f);
-        itemObject.GetComponent<SpriteRenderer>().sprite = sm.sprites[sm.data.currentGift];
+        itemObject.GetComponent<SpriteRenderer>().sprite = isGiftPicked ? sm.sprites[sm.data.currentGift] : spriteNotPicked;
         StartCoroutine(FadeManager.FadeIn(itemObject.GetComponent<SpriteRenderer>(), 1));
         itemTexts[num].text = sm.data.giftNameList[sm.data.currentGift];
-        StartCoroutine(FadeManager.FadeIn(itemTexts[itemNum], 1.5f));
+        StartCoroutine(FadeManager.FadeIn(itemTexts[num], 1.5f));
     }
 
     //선물이 있을 때 세팅 애니메이션
@@ -95,6 +101,8 @@ public class GachaSM : Singleton
     {
         repickBtn.SetActive(false);
         repickText.SetActive(false);
+
+        SetPlayer();
 
         yield return new WaitForSeconds(0.5f);
         Vector3 tempHandVector = hand.transform.position;
@@ -143,7 +151,7 @@ public class GachaSM : Singleton
             deck.transform.position = tempDeckVector;
             yield return new WaitForEndOfFrame();
         }
-        setupText.text = "남아있는 선물이 없어요!";
+        setupText.text = "현재 선택된 선물이 없어요!";
         StartCoroutine(FadeManager.FadeIn(setupText, 1));
     }
 
@@ -176,29 +184,19 @@ public class GachaSM : Singleton
     {
         repickBtn.SetActive(false);
         repickText.SetActive(false);
-        if(sm.data.currentGift == -1)
-        {
-            StartCoroutine(NotSetUp());
-            for (int i = 0; i < 3; i++)
-            {
-                cards[i].SetActive(false);
-                cards[i].GetComponent<Card>().ResetCard();
-                itemTexts[i].text = "";
-            }
-            itemObject.GetComponent<SpriteRenderer>().sprite = null;
-        }
-        else
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                cards[i].SetActive(false);
-                cards[i].GetComponent<Card>().ResetCard();
-                itemTexts[i].text = "";
-            }
-            itemObject.GetComponent<SpriteRenderer>().sprite = null;
 
-            StartCoroutine(PutCard());
+        for (int i = 0; i < 3; i++)
+        {
+            cards[i].SetActive(false);
+            cards[i].GetComponent<Card>().ResetCard();
+            itemTexts[i].text = "";
         }
+        itemObject.GetComponent<SpriteRenderer>().sprite = null;
+
+        if (currentGiftNumList.Count == 0)
+            StartCoroutine(NotSetUp());
+        else
+            StartCoroutine(PutCard());
         
     }
 
@@ -221,9 +219,38 @@ public class GachaSM : Singleton
         }
     }
 
-    public void ToMenu()
+    public void SetPlayer()
     {
-        gm.ToMenu();
+        for(int i = 0; i < sm.data.playerNameList.Count; i++)
+        {
+            ticketValueByPlayer.Add(0);
+            if (sm.data.playerTicketCountList[i] > 0)
+            {
+                GameObject temp = Instantiate(playerPrefab, playerPrefab.transform.parent);
+                temp.SetActive(true);
+                PlayerWithToggle tempPlayer = temp.GetComponent<PlayerWithToggle>();
+                tempPlayer.Set(sm.data.playerNameList[i], sm.data.playerTicketCountList[i]);
+                playerList.Add(tempPlayer);
+            }
+        }
+
+        for(int i = 0; i < sm.data.giftTicketCountList.Count; i++)
+        {
+            if (sm.data.giftPickedList[i] >= 0)
+                ticketValueByPlayer[sm.data.giftPickedList[i]] += sm.data.giftTicketCountList[i];
+        }
+
+        currentPlayerOrder = Mathf.Min(sm.data.currentGachaOrder, playerList.Count - 1);
+    }
+
+    public void OnBack()
+    {
+        gm.ToScene("Go");
+    }
+
+    public void OnHome()
+    {
+        gm.ToScene("Menu");
     }
 }
 

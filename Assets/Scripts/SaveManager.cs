@@ -124,7 +124,13 @@ public class SaveManager : Singleton
 
     public void ChangeTicket(int playerNum, int num)
     {
-        data.playerTicketCountList[playerNum] = num;
+        data.playerTicketCountList[playerNum] += num;
+        SaveData();
+    }
+
+    public void ChangeGiftTicket(int giftNum, int num)
+    {
+        data.giftTicketCountList[giftNum] += num;
         SaveData();
     }
 

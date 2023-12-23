@@ -105,4 +105,14 @@ public class GetGiftSM : Singleton
 
         emptyPlayer.SetActive(playerList.Count == 0);
     }
+
+    public void OnBack()
+    {
+        gm.ToScene("Go");
+    }
+
+    public void OnHome()
+    {
+        gm.ToScene("Menu");
+    }
 }
