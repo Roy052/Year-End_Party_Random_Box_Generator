@@ -5,6 +5,12 @@ using UnityEngine.UI;
 
 public class GachaSM : Singleton
 {
+    public enum GachaType
+    {
+        Normal = 0,
+        Last = 1,
+    }
+
     public int animationSpeed;
 
     int currentPlayerOrder = 0;
@@ -24,6 +30,7 @@ public class GachaSM : Singleton
 
     //Repick
     [SerializeField] GameObject repickBtn, repickText;
+    public GameObject bottomBtns;
 
     //Top UI
     public Sprite spriteNotPicked;
@@ -34,6 +41,9 @@ public class GachaSM : Singleton
     List<int> currentGiftNumList = new List<int>();
     List<int> currengPlayerNumList = new List<int>();
     List<int> ticketValueByPlayer = new List<int>();
+
+    GachaType gachaType = GachaType.Last;
+    int giftNum = 0;
 
     private void Start()
     {
@@ -55,6 +65,7 @@ public class GachaSM : Singleton
     public void Pick(int num)
     {
         pickedNum = num;
+        sm.data.currentGift = currentGiftNumList[0];
         if (sm.IsPicked() == false)
         {
             StartCoroutine(NotSetUp());
@@ -69,21 +80,33 @@ public class GachaSM : Singleton
             bool isGiftPicked = IsGiftPicked();
             StartCoroutine(ItemObjectSpawn(num, isGiftPicked));
             if (isGiftPicked)
-                sm.Picked(currentGiftNumList[0], currengPlayerNumList[currentPlayerOrder]);
+                sm.Picked(currentGiftNumList[gachaType == GachaType.Normal ? 0 : sm.data.currentGift], currengPlayerNumList[currentPlayerOrder]);
             else
                 sm.ChangeGiftTicket(currentGiftNumList[0], -1);
-            currentGiftNumList.RemoveAt(0);
+            currentGiftNumList.RemoveAt(gachaType == GachaType.Normal ? 0 : currentGiftNumList.IndexOf(sm.data.currentGift));
 
             repickBtn.SetActive(true);
             repickText.SetActive(true);
+            bottomBtns.SetActive(true);
         }
     }
 
     bool IsGiftPicked()
     {
-        int probabilty = sm.data.giftTicketCountList[sm.data.currentGift];
-        if (probabilty == 0) return false;
-        return Random.Range(0, probabilty + 1) == 0;
+        if(gachaType == GachaType.Normal)
+        {
+            int probabilty = sm.data.giftTicketCountList[sm.data.currentGift];
+            if (probabilty == 0) return false;
+            return Random.Range(0, probabilty + 1) == 0;
+        }
+        else
+        {
+            int probabilty = sm.data.giftNameList.Count;
+            if (probabilty == 0) return false;
+            sm.data.currentGift = Random.Range(0, probabilty - 1);
+            return true;
+        }
+        
     }
 
     IEnumerator ItemObjectSpawn(int num, bool isGiftPicked)
@@ -101,6 +124,7 @@ public class GachaSM : Singleton
     {
         repickBtn.SetActive(false);
         repickText.SetActive(false);
+        bottomBtns.SetActive(false);
 
         SetPlayer();
 
@@ -132,6 +156,7 @@ public class GachaSM : Singleton
     {
         repickBtn.SetActive(false);
         repickText.SetActive(false);
+        bottomBtns.SetActive(true);
 
         Vector3 tempHandVector = hand.transform.position;
         tempHandVector.x = cards[pickedNum].transform.position.x;
@@ -184,6 +209,7 @@ public class GachaSM : Singleton
     {
         repickBtn.SetActive(false);
         repickText.SetActive(false);
+        bottomBtns.SetActive(false);
 
         for (int i = 0; i < 3; i++)
         {
@@ -197,7 +223,12 @@ public class GachaSM : Singleton
             StartCoroutine(NotSetUp());
         else
             StartCoroutine(PutCard());
-        
+
+        if (playerList.Count > 0)
+        {
+            Destroy(playerList[0].gameObject);
+            playerList.RemoveAt(0);
+        }
     }
 
     public void SoundON(string name)
@@ -223,7 +254,8 @@ public class GachaSM : Singleton
     {
         for(int i = 0; i < sm.data.playerNameList.Count; i++)
         {
-            ticketValueByPlayer.Add(0);
+            if(ticketValueByPlayer.Count <= i)
+                ticketValueByPlayer.Add(0);
             if (sm.data.playerTicketCountList[i] > 0)
             {
                 GameObject temp = Instantiate(playerPrefab, playerPrefab.transform.parent);
@@ -240,7 +272,8 @@ public class GachaSM : Singleton
                 ticketValueByPlayer[sm.data.giftPickedList[i]] += sm.data.giftTicketCountList[i];
         }
 
-        currentPlayerOrder = Mathf.Min(sm.data.currentGachaOrder, playerList.Count - 1);
+        currentPlayerOrder = 0;
+        //currentPlayerOrder = Mathf.Min(sm.data.currentGachaOrder, playerList.Count - 1);
     }
 
     public void OnBack()
