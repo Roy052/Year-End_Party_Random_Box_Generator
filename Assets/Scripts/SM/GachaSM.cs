@@ -36,6 +36,7 @@ public class GachaSM : Singleton
     public Sprite spriteNotPicked;
     public Image currentGift;
     public GameObject playerPrefab;
+    public GameObject objLast;
 
     List<PlayerWithToggle> playerList = new List<PlayerWithToggle>();
     List<int> currentGiftNumList = new List<int>();
@@ -43,7 +44,6 @@ public class GachaSM : Singleton
     List<int> ticketValueByPlayer = new List<int>();
 
     GachaType gachaType = GachaType.Last;
-    int giftNum = 0;
 
     private void Start()
     {
@@ -51,6 +51,8 @@ public class GachaSM : Singleton
             cards[i].SetActive(false);
 
         audioSource = GetComponent<AudioSource>();
+
+        gachaType = sm.data.isLast ? GachaType.Last : GachaType.Normal;
 
         for (int i = 0; i < sm.data.giftNameList.Count; i++)
             if (sm.data.giftPickedList[i] == (int)PickType.Current)
@@ -65,25 +67,43 @@ public class GachaSM : Singleton
     public void Pick(int num)
     {
         pickedNum = num;
-        sm.data.currentGift = currentGiftNumList[0];
-        if (sm.IsPicked() == false)
+        if(gachaType == GachaType.Normal)
         {
-            StartCoroutine(NotSetUp());
-            for (int i = 0; i < 3; i++)
-                cards[i].SetActive(false);
+            sm.data.currentGift = currentGiftNumList[0];
+            if (sm.IsPicked() == false)
+            {
+                StartCoroutine(NotSetUp());
+                for (int i = 0; i < 3; i++)
+                    cards[i].SetActive(false);
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                    if (i != num) cards[i].SetActive(false);
+
+                bool isGiftPicked = IsGiftPicked();
+                StartCoroutine(ItemObjectSpawn(num, isGiftPicked));
+                if (isGiftPicked)
+                    sm.Picked(currentGiftNumList[0], currengPlayerNumList[currentPlayerOrder]);
+                else
+                    sm.ChangeGiftTicket(currentGiftNumList[0], -1);
+                currentGiftNumList.RemoveAt(0);
+
+                repickBtn.SetActive(true);
+                repickText.SetActive(true);
+                bottomBtns.SetActive(true);
+            }
         }
         else
         {
+            int pickedGiftOrder = Random.Range(0, currentGiftNumList.Count);
+            sm.data.currentGift = currentGiftNumList[pickedGiftOrder];
             for (int i = 0; i < 3; i++)
-                if (i != num) cards[i].SetActive(false);
+                    if (i != num) cards[i].SetActive(false);
 
-            bool isGiftPicked = IsGiftPicked();
-            StartCoroutine(ItemObjectSpawn(num, isGiftPicked));
-            if (isGiftPicked)
-                sm.Picked(currentGiftNumList[gachaType == GachaType.Normal ? 0 : sm.data.currentGift], currengPlayerNumList[currentPlayerOrder]);
-            else
-                sm.ChangeGiftTicket(currentGiftNumList[0], -1);
-            currentGiftNumList.RemoveAt(gachaType == GachaType.Normal ? 0 : currentGiftNumList.IndexOf(sm.data.currentGift));
+            StartCoroutine(ItemObjectSpawn(num, true));
+            sm.Picked(sm.data.currentGift, currengPlayerNumList[currentPlayerOrder]);
+            currentGiftNumList.RemoveAt(pickedGiftOrder);
 
             repickBtn.SetActive(true);
             repickText.SetActive(true);
@@ -93,20 +113,9 @@ public class GachaSM : Singleton
 
     bool IsGiftPicked()
     {
-        if(gachaType == GachaType.Normal)
-        {
-            int probabilty = sm.data.giftTicketCountList[sm.data.currentGift];
-            if (probabilty == 0) return false;
-            return Random.Range(0, probabilty + 1) == 0;
-        }
-        else
-        {
-            int probabilty = sm.data.giftNameList.Count;
-            if (probabilty == 0) return false;
-            sm.data.currentGift = Random.Range(0, probabilty - 1);
-            return true;
-        }
-        
+        int probabilty = sm.data.giftTicketCountList[sm.data.currentGift];
+        if (probabilty == 0) return false;
+        return Random.Range(0, probabilty + 1) == 0;
     }
 
     IEnumerator ItemObjectSpawn(int num, bool isGiftPicked)
@@ -125,6 +134,7 @@ public class GachaSM : Singleton
         repickBtn.SetActive(false);
         repickText.SetActive(false);
         bottomBtns.SetActive(false);
+        objLast.SetActive(gachaType == GachaType.Last);
 
         SetPlayer();
 

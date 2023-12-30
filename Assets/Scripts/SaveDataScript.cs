@@ -99,4 +99,5 @@ public class SaveData
     public int currentGift = -1;
     public int currentGachaOrder;
     public int currentPlayer = -1;
+    public bool isLast = false;
 }
