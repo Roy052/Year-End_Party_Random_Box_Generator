@@ -53,6 +53,7 @@ public class GachaSM : Singleton
         audioSource = GetComponent<AudioSource>();
 
         gachaType = sm.data.isLast ? GachaType.Last : GachaType.Normal;
+        Debug.Log(gachaType + ", " + sm.data.isLast);
 
         for (int i = 0; i < sm.data.giftNameList.Count; i++)
             if (sm.data.giftPickedList[i] == (int)PickType.Current)

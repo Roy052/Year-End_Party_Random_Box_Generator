@@ -35,12 +35,14 @@ public class GetGiftSM : Singleton
     private void Start()
     {
         //Gift
-        if(sm.data.currentGift != -1)
-            currentGiftOrder = sm.data.currentGift;
-
         for (int i = 0; i < sm.data.giftNameList.Count; i++)
             if (sm.data.giftPickedList[i] == (int)PickType.Current)
-                currentGiftNumList.Add(sm.data.giftPickedList[i]);
+                currentGiftNumList.Add(i);
+
+        if (sm.data.currentGift != -1 && currentGiftNumList.Contains(sm.data.currentGift))
+            currentGiftOrder = currentGiftNumList.IndexOf(sm.data.currentGift);
+        else
+            currentGiftOrder = 0;
 
         //Player
         if (sm.data.currentPlayer != -1)

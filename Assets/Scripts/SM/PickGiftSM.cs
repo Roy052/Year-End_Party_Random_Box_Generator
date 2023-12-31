@@ -11,6 +11,9 @@ public class PickGiftSM : Singleton
     public ParticleSystem ps;
     public Image imgCurrent;
 
+    public GameObject[] objTextGiftLeftBoxes;
+    public Text[] textGiftLeftCounts;
+
     Dictionary<int, List<int>> giftDict = new Dictionary<int, List<int>>();
     List<GameObject> currentGiftList = new List<GameObject>();
     int currentNum = 0;
@@ -33,11 +36,15 @@ public class PickGiftSM : Singleton
         for(int i = 0; i < Enum.GetNames(typeof(GradeType)).Length; i++)
             giftDict.Add(i, new List<int>());
 
-        int count = sm.data.giftNameList.Count;
-        for (int i = 0; i < count; i++)
-            if(sm.data.giftPickedList[i] == (int)PickType.NotPicked)
+        for (int i = 0; i < sm.data.giftNameList.Count; i++)
+        {
+            if (sm.data.giftPickedList[i] == (int)PickType.NotPicked)
                 giftDict[sm.data.giftGradeList[i]].Add(i);
-        
+            else if (sm.data.giftPickedList[i] == (int)PickType.Current)
+                MakeElt(i);
+        }
+
+        RefreshGiftLeftText();
     }
 
     public void Set()
@@ -60,6 +67,7 @@ public class PickGiftSM : Singleton
         int randVal = UnityEngine.Random.Range(0, giftDict[num].Count);
         int giftNum = giftDict[num][randVal];
         sm.data.giftPickedList[giftNum] = (int)PickType.Current;
+        sm.SaveData();
         imgList[num].GetComponent<Button>().enabled = false;
         StartCoroutine(ShowPickedGift(num, giftNum));
     }
@@ -68,6 +76,10 @@ public class PickGiftSM : Singleton
     {
         for(int i = 0; i < imgList.Count; i++)
             imgList[i].gameObject.SetActive(i == num);
+
+        objTextGiftLeftBoxes[num].SetActive(false);
+
+        textGiftLeftCounts[num].transform.parent.gameObject.SetActive(false);
 
         RectTransform rect = imgList[num].rectTransform;
 
@@ -99,13 +111,11 @@ public class PickGiftSM : Singleton
         yield return null;
         ps.Play();
 
-        GameObject temp = Instantiate(giftPrefab, giftPrefab.transform.parent);
-        Gift tempGift = temp.GetComponent<Gift>();
-        tempGift.Set(giftNum, sm.data.giftGradeList[giftNum], sm.data.giftNameList[giftNum], sm.data.giftTicketCountList[giftNum], sm.data.giftPickedList[giftNum]);
-        currentGiftList.Add(temp);
+        MakeElt(giftNum);
 
         imgCurrent.sprite = sm.sprites[giftNum];
         imgCurrent.gameObject.SetActive(true);
+        giftDict[num].Remove(giftNum);
     }
 
     public void OnClickGift()
@@ -116,6 +126,7 @@ public class PickGiftSM : Singleton
         currentGiftList[currentGiftList.Count - 1].SetActive(true);
         imgCurrent.gameObject.SetActive(false);
         imgList[currentNum].GetComponent<Button>().enabled = true;
+        RefreshGiftLeftText();
     }
 
     public void OnBack()
@@ -126,5 +137,23 @@ public class PickGiftSM : Singleton
     public void OnHome()
     {
         gm.ToScene("Menu");
+    }
+
+    void RefreshGiftLeftText()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            objTextGiftLeftBoxes[i].SetActive(true);
+            textGiftLeftCounts[i].text = $"남은 선물 : {giftDict[i].Count}개";
+        }
+    }
+
+    void MakeElt(int giftNum)
+    {
+        GameObject temp = Instantiate(giftPrefab, giftPrefab.transform.parent);
+        Gift tempGift = temp.GetComponent<Gift>();
+        tempGift.Set(giftNum, sm.data.giftGradeList[giftNum], sm.data.giftNameList[giftNum], sm.data.giftTicketCountList[giftNum], sm.data.giftPickedList[giftNum]);
+        currentGiftList.Add(temp);
+        temp.SetActive(true);
     }
 }

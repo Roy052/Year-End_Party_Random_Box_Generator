@@ -29,6 +29,7 @@ public class SetUpSM : Singleton
     [SerializeField] Image giftImage;
 
     int giftCount = 0;
+    int playerCount = 0;
     int tempGradeNum;
     string tempGiftName;
     string tempGiftValue;
@@ -60,12 +61,18 @@ public class SetUpSM : Singleton
         for (int i = 0; i < giftCount; i++)
             CreateGiftPrefab(i, sm.data.giftGradeList[i], sm.data.giftNameList[i], sm.data.giftTicketCountList[i]);
 
+        playerCount = sm.data.playerNameList.Count;
+        for (int i = 0; i < playerCount; i++)
+            CreatePlayerPrefab(sm.data.playerNameList[i], sm.data.playerTicketCountList[i]);
+
         dropDownGradeNum.options.Clear();
         for (int i = 1; i <= 3; i++)
             dropDownGradeNum.options.Add(new Dropdown.OptionData() { text = Extended.ConvertToRoman(i) });
             
         if(sm.sprites.Count > giftCount + 1)
-            giftImage.sprite = sm.sprites[giftCount + 1];
+            giftImage.sprite = sm.sprites[giftCount];
+
+       
     }
 
     public void OnAddPlayer()

@@ -6,6 +6,7 @@ public class GoSM : Singleton
     public GameObject playerPrefab;
     public GameObject giftPrefab;
     public Text textInfoName;
+    public Toggle toggleLast;
 
     public GameObject empty;
 
@@ -39,6 +40,7 @@ public class GoSM : Singleton
         }
 
         empty.SetActive(string.IsNullOrEmpty(sm.data.dataName));
+        toggleLast.isOn = sm.data.isLast;
     }
 
     private void OnDestroy()
@@ -74,5 +76,13 @@ public class GoSM : Singleton
     public void OnMenu()
     {
         gm.ToScene("Menu");
+    }
+
+    public void OnToggleLast(bool isOn)
+    {
+        if (sm.data.isLast == isOn) return;
+
+        sm.data.isLast = isOn;
+        sm.SaveData();
     }
 }
